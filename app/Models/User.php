@@ -78,4 +78,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UnidadAcademica::class, 'tusuario_id');
     }
+
+
+    public function respuestas(){
+        return $this->hasMany(Respuesta::class, 'tusuario_id_creacion');
+
+    }
 }
