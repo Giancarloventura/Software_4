@@ -319,9 +319,12 @@ class HorarioController extends Controller
 
     public function listarHorarioXCursoXCiclo(ListarHorarioXCursoXCicloRequest $request)
     {
-        $horarios = Horario::select('tHorario.id', 'tHorario.horario')
+        $horarios = Horario::join('tCurso', 'tCurso.id', '=', 'tHorario.idtCurso')
+            ->select('tHorario.id', 'tHorario.horario')
             ->where('tHorario.idtSemestre', '=', $request->idSemestre)
             ->where('tHorario.idtCurso', '=', $request->idCurso)
+            ->where('tHorario.estado', '=', 'ACT')
+            ->where('tCurso.estado', '=', 'ACT')
             ->get();
 
         return response()->json($horarios, 200);
