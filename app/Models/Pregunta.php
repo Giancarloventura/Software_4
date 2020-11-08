@@ -11,5 +11,9 @@ class Pregunta extends Model
 
     public $incrementing = true;
 
+    
     protected $table = 'tPregunta';
+
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATED_AT = 'fecha_actualizacion';
 }
