@@ -59,6 +59,7 @@ Route::post('crear-fase', [FaseController::class, 'crearFase']);
 Route::post('editar-fase', [FaseController::class, 'editarFase']);
 Route::post('eliminar-fase', [FaseController::class, 'eliminarFase']);
 Route::get('listar-fases/{id}', [FaseController::class, 'listarFases']);
+Route::post('obtener-fase', [FaseController::class, 'obtenerFase']);
 
 // RUTAS PARA LAS UNIDADES ACADÉMICAS
 Route::group(['prefix' => 'unidadesacademicas'], function () {
