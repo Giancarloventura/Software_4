@@ -113,6 +113,23 @@ class FaseController extends Controller
         return response()->json($evaluacion, 200);
     }
 
+    public function obtenerFase(Request $request)
+    {
+        try
+        {
+            $fase = Fase::select('id', 'nombre', 'fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin',
+                                'puntaje', 'sincrona', 'preguntas_aleatorias', 'preguntas_mostradas',
+                                'disposicion_preguntas', 'permitir_retroceso')
+                        ->where('id', $request->id)
+                        ->first();
+            return response()->json($fase, 200);
+        }
+        catch (Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
+    }
+
 
     public function getSeguimiento($id)
     {
