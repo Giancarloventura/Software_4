@@ -1,14 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+#namespace App\Models;
 
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Fase;
+use App\Models\User;
 use App\Http\Requests\CrearFaseRequest;
 use App\Http\Requests\ListarFaseXEvaluacionRequest;
+use DB;
+
+
 
 class FaseController extends Controller
 {
@@ -106,5 +111,37 @@ class FaseController extends Controller
             ->get();
 
         return response()->json($evaluacion, 200);
+    }
+
+
+    public function getSeguimiento($id)
+    {
+
+        $alumnos  = User::with(['respuestas' => function($query) use ($id){
+            $query->where('idtFase', $id);
+        
+        } ])->whereHas('respuestas')->get();
+
+        $alumnos_collection = [];
+
+        foreach ($alumnos as $alumno){
+            $last_count = DB::table('tRespuesta')
+                        
+                        ->where('tusuario_id_creacion', $alumno->id)
+                        ->where('idtFase', $id)
+                        ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
+                        ->count()+1;
+            $tmp = [
+                'nombre'=> $alumno -> nombre,
+                'apellido_parterno'=> $alumno->apellido_paterno,
+                'apellido_materno'=> $alumno->apellido_materno,
+                'codigo' => $alumno->codigo,
+                'preguntas_respondidas_count' => $alumno->respuestas->count(),
+                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('max(idtPregunta) as ultima'))->where ('tusuario_id_creacion', $alumno->id)->where('idtFase', $id )->first(),
+
+            ];
+            $alumnos_collection[] = $tmp;
+        }
+        return response()->json($alumnos, 200);
     }
 }

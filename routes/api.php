@@ -98,3 +98,5 @@ Route::post('obtener-unidad-academica', [UsuarioController::class, 'getUnidaAcad
 Route::post('obtener-semestres-de-usuario', [UsuarioController::class, 'getSemestres']);
 
 Route::post('modificar-nota-alumno', [RespuestaController::class, 'modificarNotaAlumno']);
+
+Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
