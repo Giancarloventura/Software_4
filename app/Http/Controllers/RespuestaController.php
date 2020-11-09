@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AgregarComentarioAlumnoRequest;
 use App\Http\Requests\ModificarNotaAlumnoRequest;
 use Illuminate\Http\Request;
 use App\Models\Respuesta;
@@ -13,10 +14,18 @@ class RespuestaController extends Controller
     {
         $respuesta = Respuesta::findOrFail($request->idRespuesta);
         $respuesta->puntaje_obtenido = $request->puntaje;
-        $respuesta->comentario = $request->comentario;
         $respuesta->save();
 
         return response()->json("Nota modificada correctamente", 200);
+    }
+
+    public function agregarComentarioAlumno(AgregarComentarioAlumnoRequest $request)
+    {
+        $respuesta = Respuesta::findOrFail($request->idRespuesta);
+        $respuesta->comentario = $request->comentario;
+        $respuesta->save();
+
+        return response()->json("Comentario agregado correctamente", 200);
     }
 
     public function listarPreguntasdeAlumno(Request $request){
@@ -59,9 +68,9 @@ class RespuestaController extends Controller
                     }
                 }
             }
-            
+
             $pregunta->respuesta = $respuesta;
-            
+
         }
 
         return response()->json($preguntas, 200);

@@ -75,7 +75,16 @@ class EvaluacionController extends Controller
 
     public function copiarEvaluacion(CopiarEvaluacionRequest $request)
     {
-        
+        $evaluacionACopiar = Evaluacion::findOrFail($request->idEvaluacionCopia);
+
+        $evaluacion = new Evaluacion();
+        $evaluacion->idtHorario = $request->idHorario;
+        $evaluacion->nombre = $evaluacionACopiar->nombre;
+        $evaluacion->puntaje_obtenido = $evaluacionACopiar->puntaje_obtenido;
+        $evaluacion->puntaje = $evaluacionACopiar->puntaje;
+        $evaluacion->save();
+
+        $idEvaluacion = Evaluacion::orderBy('fecha_creacion', 'desc')->first();
     }
 }
 
