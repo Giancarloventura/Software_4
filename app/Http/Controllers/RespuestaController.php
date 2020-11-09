@@ -10,10 +10,12 @@ use App\Models\Fase;
 
 class RespuestaController extends Controller
 {
-    public function modificarNotaAlumno(ModificarNotaAlumnoRequest $request)
+    public function modificarNotaComentarioAlumno(ModificarNotaAlumnoRequest $request)
     {
         $respuesta = Respuesta::findOrFail($request->idRespuesta);
         $respuesta->puntaje_obtenido = $request->puntaje;
+        $respuesta->comentario = $request->comentario;
+        $respuesta->tUsuario_id_actualizacion = $request->idProfesor;
         $respuesta->save();
 
         return response()->json("Nota modificada correctamente", 200);

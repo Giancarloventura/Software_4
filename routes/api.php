@@ -101,7 +101,7 @@ Route::post('listar-cursos-de-unidad-academica', [UnidadAcademicaController::cla
 Route::post('obtener-unidad-academica', [UsuarioController::class, 'getUnidaAcademica']);
 Route::post('obtener-semestres-de-usuario', [UsuarioController::class, 'getSemestres']);
 
-Route::post('modificar-nota-alumno', [RespuestaController::class, 'modificarNotaAlumno']);
+Route::post('modificar-nota-comentario-alumno', [RespuestaController::class, 'modificarNotaComentarioAlumno']);
 
 Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
 

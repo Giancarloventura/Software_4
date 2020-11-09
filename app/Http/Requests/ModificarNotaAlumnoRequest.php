@@ -17,7 +17,9 @@ class ModificarNotaAlumnoRequest extends FormRequest
     {
         return [
             'idRespuesta' => ['required'],
-            'puntaje' => ['required']
+            'puntaje' => ['required'],
+            'idProfesor' => ['required'],
+            'comentario' => ['required']
         ];
     }
 }
