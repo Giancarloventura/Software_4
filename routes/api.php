@@ -87,6 +87,8 @@ Route::post('subir-csv-horarios-vista-previa', [HorarioController::class, 'impor
 
 Route::post('subir-csv-horarios', [HorarioController::class, 'importarHorarios']);
 
+Route::post('agregar-pregunta', [PreguntaController::class, 'agregarPregunta']);
+Route::post('editar-pregunta', [PreguntaController::class, 'editarPregunta']);
 
 Route::post('cursos-usuario', [CursoController::class, 'listarCursosXUsuario']);
 Route::post('evaluaciones-horario', [EvaluacionController::class, 'listarEvaluacionesXHorario']);
