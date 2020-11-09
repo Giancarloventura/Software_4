@@ -13,7 +13,7 @@ class PreguntaController extends Controller
         try
         {
 
-            $usuario = User::select('id')->where('codigo', $request->codigo)->first();
+            $usuario = User::select('id')->where('codigo', 20170942)->first();
 
             if(is_null($usuario))
             {
