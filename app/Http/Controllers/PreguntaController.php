@@ -13,13 +13,13 @@ class PreguntaController extends Controller
         try
         {
 
-            $usuario = User::select('id')->where('codigo', $request->Usuario_codigo)->first();
+            $usuario = User::select('id')->where('codigo', $request->codigo)->first();
 
             if(is_null($usuario))
             {
                 $usuario = new User();
-                $usuario->email = $request->Usuario_email;
-                $usuario->codigo = $request->Usuario_codigo;
+                $usuario->email = $request->email;
+                $usuario->codigo = $request->codigo;
 
                 $usuario->save();
             }
