@@ -18,4 +18,10 @@ class Fase extends Model
     {
         return $this->belongsTo(Evaluacion::class, 'idtEvaluacion');
     }
+
+    public function preguntas()
+    {
+        return $this->belongsToMany(Pregunta::class, 'tFase_tPregunta', 'idtFase', 'idtPregunta');
+    }
+
 }

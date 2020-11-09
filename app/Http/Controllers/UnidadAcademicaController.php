@@ -181,6 +181,6 @@ class UnidadAcademicaController extends Controller
     public function listarCursos(Request $request)
     {
         $ua = UnidadAcademica::find($request->idUnidadAcademica);
-        return response()->json(CursoResource::collection($ua->cursos()->get()->all()),200);
+        return response()->json(CursoResource::collection($ua->cursos()->where('estado', "ACT")->get(),200));
     }
 }
