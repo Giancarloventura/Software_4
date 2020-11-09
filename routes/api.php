@@ -11,6 +11,7 @@ use App\Http\Controllers\FaseController;
 use App\Http\Controllers\UnidadAcademicaController;
 use App\Http\Controllers\RespuestaController;
 use App\Http\Controllers\ComentarioControlador;
+use App\Http\Controllers\PreguntaController;
 
 /*
 |--------------------------------------------------------------------------
