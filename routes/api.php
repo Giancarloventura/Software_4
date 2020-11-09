@@ -10,6 +10,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\FaseController;
 use App\Http\Controllers\UnidadAcademicaController;
 use App\Http\Controllers\RespuestaController;
+use App\Http\Controllers\ComentarioControlador;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,3 +99,6 @@ Route::post('obtener-unidad-academica', [UsuarioController::class, 'getUnidaAcad
 Route::post('obtener-semestres-de-usuario', [UsuarioController::class, 'getSemestres']);
 
 Route::post('modificar-nota-alumno', [RespuestaController::class, 'modificarNotaAlumno']);
+
+
+Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
