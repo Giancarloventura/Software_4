@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AgregarComentarioAlumnoRequest;
 use App\Http\Requests\ModificarNotaAlumnoRequest;
+use Illuminate\Support\Collection;
+use App\Http\Resources\PreguntaResource;
+use App\Http\Resources\RespuestaResource;
+use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Respuesta;
 use App\Models\Fase;
@@ -34,6 +38,7 @@ class RespuestaController extends Controller
         $fase = Fase::findOrFail($request->idFase);
         $evaluacion = $fase->evaluacion()->first();
         $preguntas = $fase->preguntas()->get();
+        $preguntas_respuestas = new Collection;
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();
             $pregunta->opciones = $alternativas;
@@ -71,11 +76,17 @@ class RespuestaController extends Controller
                     }
                 }
             }
-            $pregunta->respuesta = $respuesta;
-
+            $respuesta->tipo = $pregunta->tipo;
+            $respuesta->tipoMarcado = $pregunta->tipo_marcado;
+            $respuesta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->feedback = $respuesta->comentario;
+            $pregunta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
+            $aux = collect(['pregunta' => new PreguntaResource($pregunta), 'respuesta' => new RespuestaResource($respuesta)]);
+            $preguntas_respuestas->push($aux);
         }
 
-        return response()->json($preguntas, 200);
+        return response()->json($preguntas_respuestas, 200);
 
     }
 

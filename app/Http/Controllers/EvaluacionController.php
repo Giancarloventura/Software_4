@@ -13,6 +13,7 @@ use App\Models\Pregunta;
 use App\Models\FasePregunta;
 use App\Models\AlternativaPregunta;
 use App\Models\Fase;
+use App\Http\Resources\Fase as FaseResource;
 
 class EvaluacionController extends Controller
 {
@@ -71,7 +72,7 @@ class EvaluacionController extends Controller
 
         return response()->json([
             'nombreEvaluacion'=>$evaluacion->nombre,
-            'fases'=>Fase::collection($fases)
+            'fases'=>FaseResource::collection($fases)
         ], 200);
     }
 
