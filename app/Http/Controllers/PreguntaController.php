@@ -30,11 +30,13 @@ class PreguntaController extends Controller
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
             $pregunta->tipo = $request->tipo;
-            if($request->tipo==0){
+            if($pregunta->tipo==0){
                 $pregunta->tipo_marcado = NULL;
-            } else {
+            }
+            else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
             }
+            $pregunta->posicion = 0;
             //$pregunta->tusuario_id_creacion = $usuario->id;
             //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
             $pregunta->fecha_actualizacion = NULL;

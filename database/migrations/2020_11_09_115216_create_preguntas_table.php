@@ -20,6 +20,7 @@ class CreatePreguntasTable extends Migration
             $table->decimal('puntaje',6,2);
             $table->integer('tipo');
             $table->integer('tipo_marcado');
+            $table->integer('posicion');
             $table->timestamp('fecha_creacion')->nullable();
             $table->timestamp('fecha_actualizacion')->nullable();
             $table->foreignId('tusuario_id_creacion')->nullable()->constrained('tUsuario');
