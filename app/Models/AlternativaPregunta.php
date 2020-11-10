@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $idtPregunta
  * @property TPreguntum $tPreguntum
  * @property TUsuario $tUsuario
- * @property TUsuario $tUsuario
- * @property TRespuestum[] $tRespuestas
  * @property TRespuestum[] $tRespuestas
  */
 class AlternativaPregunta extends Model
