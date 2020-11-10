@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePreguntasTable extends Migration
+class CreateAlternativaPreguntaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreatePreguntasTable extends Migration
      */
     public function up()
     {
-        Schema::create('tPregunta', function (Blueprint $table) {
+        Schema::create('tAlternativa_Pregunta', function (Blueprint $table) {
             $table->id();
             $table->string('enunciado', 1000);
-            $table->integer('cant_intentos');
-            $table->decimal('puntaje',6,2);
-            $table->integer('tipo');
-            $table->integer('tipo_marcado');
-            $table->integer('posicion');
+            $table->string('ruta_archivo', 500);
+            $table->tinyInteger('es_imagen');
+            $table->tinyInteger('es_correcta');
             $table->timestamp('fecha_creacion')->nullable();
             $table->timestamp('fecha_actualizacion')->nullable();
+            $table->foreignId('idtPregunta')->constrained('tPregunta');
             $table->foreignId('tusuario_id_creacion')->nullable()->constrained('tUsuario');
             $table->foreignId('tusuario_id_actualizacion')->nullable()->constrained('tUsuario');
         });
@@ -35,6 +34,6 @@ class CreatePreguntasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tPregunta');
+        Schema::dropIfExists('tAlternativa_Pregunta');
     }
 }
