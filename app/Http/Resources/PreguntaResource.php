@@ -20,7 +20,7 @@ class PreguntaResource extends JsonResource
             'fecha_actualizacion' => $this->fecha_actualizacion,
             'nroOrden' => $this->posicion,
             'enunciado' => $this->enunciado,
-            'puntajeMax' => $this->puntaje,
+            'puntajeMax' => (float) $this->puntaje,
             'tipo' => $this->tipo,
             'tipoMarcado' => $this->tipo_marcado,
             'opciones' => $this->opciones,
