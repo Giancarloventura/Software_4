@@ -55,6 +55,7 @@ class RespuestaController extends Controller
                 $respuesta->tusuario_id_actualizacion = $request->idUsuario;
                 $respuesta->idtPregunta = $pregunta->id;
                 $respuesta->numero_intento = 0;
+                $respuesta->fecha_actualizacion = null;
                 if($alternativas->count()>0){
                     $respuesta->es_marcada = 1;
                     $pregunta->opciones = $alternativas;
