@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ModificarNotaAlumnoRequest extends FormRequest
+class ObtenerCantidadPreguntasRequest extends FormRequest
 {
 
     public function authorize()
@@ -16,10 +16,7 @@ class ModificarNotaAlumnoRequest extends FormRequest
     public function rules()
     {
         return [
-            'idRespuesta' => ['required'],
-            'puntaje' => ['required'],
-            'idProfesor' => ['required'],
-            'comentario' => ['required']
+            'idFase' => ['required']
         ];
     }
 }
