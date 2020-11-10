@@ -25,6 +25,7 @@ class RespuestaController extends Controller
         $preguntas = $fase->preguntas()->get();
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();
+            $pregunta->opciones = $alternativas;
             if (Respuesta::where('idtFase', $request->idFase)->where('idtPregunta', $pregunta->id)->where('tusuario_id_creacion', $request->idUsuario)->exists()) {
                 $respuesta = Respuesta::where('idtFase', $request->idFase)->where('idtPregunta', $pregunta->id)->where('tusuario_id_creacion', $request->idUsuario)->first();
                 $alternativasRespuesta = $respuesta->alternativas()->get();
@@ -60,6 +61,7 @@ class RespuestaController extends Controller
                 }
             }
             
+            $respuesta->opciones = $alternativas;
             $pregunta->respuesta = $respuesta;
             
         }
