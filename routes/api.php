@@ -10,6 +10,8 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\FaseController;
 use App\Http\Controllers\UnidadAcademicaController;
 use App\Http\Controllers\RespuestaController;
+use App\Http\Controllers\ComentarioControlador;
+use App\Http\Controllers\PreguntaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,7 @@ Route::post('crear-evaluacion', [EvaluacionController::class, 'crearEvaluacion']
 Route::get('evaluaciones', [EvaluacionController::class, 'listarEvaluaciones']);
 Route::post('evaluacion-codigo', [EvaluacionController::class, 'obtenerEvaluacionXCodigo']);
 Route::post('obtener-fases-de-evaluacion', [EvaluacionController::class, 'obtenerFasesXEvaluacion']);
+Route::post('copiar-evaluacion', [EvaluacionController::class, 'copiarEvaluacion']);
 
 Route::get('cursos-actuales', [CursoController::class, 'listarCursosActuales']);
 Route::post('listarLaboratoriosPorHorario', [CursoController::class, 'listarLaboratoriosPorHorario']);
@@ -60,6 +63,7 @@ Route::post('editar-fase', [FaseController::class, 'editarFase']);
 Route::post('eliminar-fase', [FaseController::class, 'eliminarFase']);
 Route::get('listar-fases/{id}', [FaseController::class, 'listarFases']);
 Route::post('obtener-fase', [FaseController::class, 'obtenerFase']);
+Route::post('cantidad-preguntas-fase', [FaseController::class, 'obtenerCantidadPreguntas']);
 
 // RUTAS PARA LAS UNIDADES ACADÉMICAS
 Route::group(['prefix' => 'unidadesacademicas'], function () {
@@ -84,6 +88,8 @@ Route::post('subir-csv-horarios-vista-previa', [HorarioController::class, 'impor
 
 Route::post('subir-csv-horarios', [HorarioController::class, 'importarHorarios']);
 
+Route::post('agregar-pregunta', [PreguntaController::class, 'agregarPregunta']);
+Route::post('editar-pregunta', [PreguntaController::class, 'editarPregunta']);
 
 Route::post('cursos-usuario', [CursoController::class, 'listarCursosXUsuario']);
 Route::post('evaluaciones-horario', [EvaluacionController::class, 'listarEvaluacionesXHorario']);
@@ -98,7 +104,25 @@ Route::post('listar-cursos-de-unidad-academica', [UnidadAcademicaController::cla
 Route::post('obtener-unidad-academica', [UsuarioController::class, 'getUnidaAcademica']);
 Route::post('obtener-semestres-de-usuario', [UsuarioController::class, 'getSemestres']);
 
-Route::post('modificar-nota-alumno', [RespuestaController::class, 'modificarNotaAlumno']);
+Route::post('modificar-nota-comentario-alumno', [RespuestaController::class, 'modificarNotaComentarioAlumno']);
+
+Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
+
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
+
+
+Route::post('comentario-alumno', [RespuestaController::class, 'agregarComentarioAlumno']);
+Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
+
+Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
+
+
+
+Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
+
+Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
+
+Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
+

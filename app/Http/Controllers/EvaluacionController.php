@@ -9,8 +9,10 @@ use App\Models\Evaluacion;
 use App\Models\Horario;
 use App\Http\Requests\CrearEvaluacionRequest;
 use App\Http\Requests\ListarEvaluacionXHorarioRequest;
-
-use App\Http\Resources\Fase;
+use App\Models\Pregunta;
+use App\Models\FasePregunta;
+use App\Models\AlternativaPregunta;
+use App\Models\Fase;
 
 class EvaluacionController extends Controller
 {
@@ -75,7 +77,88 @@ class EvaluacionController extends Controller
 
     public function copiarEvaluacion(CopiarEvaluacionRequest $request)
     {
-        
+        //Obtengo el dato de la evaluacion anterior
+        $evaluacionACopiar = Evaluacion::findOrFail($request->idEvaluacionCopia);
+
+        //Creo la nueva evaluacion
+        $evaluacion = new Evaluacion();
+        $evaluacion->idtHorario = $request->idHorario;
+        $evaluacion->nombre = $evaluacionACopiar->nombre;
+        $evaluacion->puntaje_obtenido = $evaluacionACopiar->puntaje_obtenido;
+        $evaluacion->puntaje = $evaluacionACopiar->puntaje;
+        $evaluacion->save();
+
+        //Obtengo el id de la evaluacion creada
+        $evaluacionCreada = Evaluacion::orderBy('tEvaluacion.id', 'desc')->first();
+        $idEvaluacion = $evaluacionCreada->id;
+
+        //Obtener las fases que se desean copiar
+        $fasesCopia = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacionCopia)->get();
+        foreach($fasesCopia as $faseCopia)
+        {
+            //Crear la nueva fase
+            $fase = new Fase();
+            $fase->idtEvaluacion = $idEvaluacion;
+            $fase->nombre = $faseCopia->nombre;
+            $fase->fecha_inicio = $faseCopia->fecha_inicio;
+            $fase->fecha_fin = $faseCopia->fecha_fin;
+            $fase->hora_inicio = $faseCopia->hora_inicio;
+            $fase->hora_fin = $faseCopia->hora_fin;
+            $fase->puntaje = $faseCopia->puntaje;
+            $fase->sincrona = $faseCopia->sincrona;
+            $fase->preguntas_aleatorias = $faseCopia->preguntas_aleatorias;
+            $fase->preguntas_mostradas = $faseCopia->preguntas_mostradas;
+            $fase->disposicion_preguntas = $faseCopia->disposicion_preguntas;
+            $fase->permitir_retroceso = $faseCopia->permitir_retroceso;
+            $fase->save();
+
+            //Obtengo el id de la fase creada
+            $faseCreada = Fase::orderBy('tFase.id', 'desc')->first();
+            $idFase = $faseCreada->id;
+
+            //Obtener las preguntas que se desean copiar
+            $idPreguntasCopia =  FasePregunta::where('tFase_tPregunta.idtFase', '=', $faseCopia->id)->get();
+            foreach($idPreguntasCopia as $idPreguntaCopia)
+            {
+                //Crear la nueva pregunta a partir de la ya existente
+                $preguntaCopia = Pregunta::findOrFail($idPreguntaCopia->idtPregunta);
+                $pregunta = new Pregunta();
+                $pregunta->enunciado = $preguntaCopia->enunciado;
+                $pregunta->cant_intentos = $preguntaCopia->cant_intentos;
+                $pregunta->puntaje = $preguntaCopia->puntaje;
+                $pregunta->tipo = $preguntaCopia->tipo;
+                $pregunta->tipo_marcado = $preguntaCopia->tipo_marcado;
+                $pregunta->tusuario_id_creacion = $preguntaCopia->tusuario_id_creacion;
+                $pregunta->tusuario_id_actualizacion = $preguntaCopia->tusuario_id_actualizacion;
+                $pregunta->save();
+
+                //Obtener el id de la pregunta creada
+                $preguntaCreada = Pregunta::orderBy('tPregunta.id', 'desc')->first();
+                $idPregunta = $preguntaCreada->id;
+
+                //Obtenemos las alternativas de la pregunta a copiar
+                $alternativasCopia = AlternativaPregunta::where('tAlternativa_Pregunta.idtPregunta', '=', $idPreguntaCopia->idtPregunta)->get();
+                foreach($alternativasCopia as $alternativaCopia)
+                {
+                    //Crear la nueva alternativa a partir de la ya existente
+                    $alternativa = new AlternativaPregunta();
+                    $alternativa->enunciado = $alternativaCopia->enunciado;
+                    $alternativa->ruta_archivo = $alternativaCopia->ruta_archivo;
+                    $alternativa->es_imagen = $alternativaCopia->es_imagen;
+                    $alternativa->es_correcta = $alternativaCopia->es_correcta;
+                    $alternativa->idtPregunta = $idPregunta;
+                    $alternativa->save();
+                }
+
+                //Creamos el enlace de la fase con la pregunta creada
+                $fasePregunta = new FasePregunta();
+                $fasePregunta->idtFase = $idFase;
+                $fasePregunta->idtPregunta = $idPregunta;
+                $fasePregunta->save();
+            }
+        }
+
+        return response()->json('Evaluacion copiada exitosamente', 200);
     }
 }
 

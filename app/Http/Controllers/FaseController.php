@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
+use App\Http\Requests\ObtenerCantidadPreguntasRequest;
+use App\Models\FasePregunta;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Fase;
@@ -136,14 +138,14 @@ class FaseController extends Controller
 
         $alumnos  = User::with(['respuestas' => function($query) use ($id){
             $query->where('idtFase', $id);
-        
+
         } ])->whereHas('respuestas')->get();
 
         $alumnos_collection = [];
 
         foreach ($alumnos as $alumno){
             $last_count = DB::table('tRespuesta')
-                        
+
                         ->where('tusuario_id_creacion', $alumno->id)
                         ->where('idtFase', $id)
                         ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
@@ -160,5 +162,12 @@ class FaseController extends Controller
             $alumnos_collection[] = $tmp;
         }
         return response()->json($alumnos, 200);
+    }
+
+    public function obtenerCantidadPreguntas(ObtenerCantidadPreguntasRequest $request)
+    {
+        $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
+
+        return response()->json($cantidad, 200);
     }
 }
