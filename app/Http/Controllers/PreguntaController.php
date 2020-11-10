@@ -13,7 +13,7 @@ class PreguntaController extends Controller
         try
         {
 
-            $usuario = User::select('id')->where('codigo', $request->codigo)->first();
+            /*$usuario = User::select('id')->where('codigo', $request->codigo)->first();
 
             if(is_null($usuario))
             {
@@ -22,7 +22,7 @@ class PreguntaController extends Controller
                 $usuario->codigo = $request->codigo;
 
                 $usuario->save();
-            }
+            }*/
 
             $pregunta = new Pregunta();
             $pregunta->id = $request->id;
@@ -35,8 +35,8 @@ class PreguntaController extends Controller
             } else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
             }
-            $pregunta->tusuario_id_creacion = $usuario->id;
-            $pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+            //$pregunta->tusuario_id_creacion = $usuario->id;
+            //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
             $pregunta->fecha_actualizacion = NULL;
             $pregunta->save();
             return response()->json($pregunta);
