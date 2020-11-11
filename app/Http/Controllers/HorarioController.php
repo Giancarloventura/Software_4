@@ -336,8 +336,10 @@ class HorarioController extends Controller
         $rol = UsuarioRol::select('tUsuario_tRol.idtRol')
             ->where('tUsuario_tRol.idtUsuario', '=', $request->idUsuario)
             ->where('tUsuario_tRol.idtHorario', '=', $request->idHorario)
-            ->get();
+            ->first();
 
-        return response()->json($rol, 200);
+        $idRol = $rol->idtRol;
+
+        return response()->json($idRol, 200);
     }
 }
