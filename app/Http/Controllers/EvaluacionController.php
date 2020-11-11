@@ -148,13 +148,20 @@ class EvaluacionController extends Controller
                     $alternativa->es_imagen = $alternativaCopia->es_imagen;
                     $alternativa->es_correcta = $alternativaCopia->es_correcta;
                     $alternativa->idtPregunta = $idPregunta;
+                    $alternativa->tusuario_id_creacion = $alternativaCopia->tusuario_id_creacion;
+                    $alternativa->tusuario_id_actualizacion = $alternativaCopia->tusuario_id_actualizacion;
                     $alternativa->save();
                 }
 
                 //Creamos el enlace de la fase con la pregunta creada
+                $fasePreguntaCopia = FasePregunta::where('tFase_tPregunta.idtFase', '=', $faseCopia->id)
+                    ->where('tFase_tPregunta.idtPregunta', '=', $preguntaCopia->id)
+                    ->first();
                 $fasePregunta = new FasePregunta();
                 $fasePregunta->idtFase = $idFase;
                 $fasePregunta->idtPregunta = $idPregunta;
+                $fasePregunta->tusuario_id_creacion = $fasePreguntaCopia->tusuario_id_creacion;
+                $fasePregunta->tusuario_id_actualizacion = $fasePreguntaCopia->tusuario_id_actualizacion;
                 $fasePregunta->save();
             }
         }
