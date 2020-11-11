@@ -114,20 +114,13 @@ Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'lis
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 Route::post('listar-preguntas-de-profesor', [PreguntaController::class, 'listarPreguntasdeProfesor']);
+Route::post('guardar-pregunta', [RespuestaController::class, 'guardarRespuesta']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
 
 Route::post('comentario-alumno', [RespuestaController::class, 'agregarComentarioAlumno']);
-Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
-
-
-Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
-
-Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
-
-Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 

@@ -91,4 +91,21 @@ class RespuestaController extends Controller
 
     }
 
+
+    public function guardarRespuesta (Request $request){
+        $respuesta = Respuesta::find($request->id);
+        $respuesta->numero_intento = $respuesta->numero_intento + 1;
+        if($request->tipo == 0){
+            $respuesta->redaccion = $request->texto;
+        }
+        else{
+            $respuesta->alternativas()->detach();
+            $opciones = $request->opciones;
+            foreach($opciones as $opcion){
+                $respuesta->alternativas()->attach($opcion['id']);
+            }
+        }
+        
+    }
+
 }
