@@ -105,7 +105,8 @@ class RespuestaController extends Controller
                 $respuesta->alternativas()->attach($opcion['id']);
             }
         }
-        
+        $respuesta->estado = 1;
+        $respuesta->save();
     }
 
 }
