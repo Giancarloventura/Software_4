@@ -112,6 +112,7 @@ Route::post('modificar-nota-comentario-alumno', [RespuestaController::class, 'mo
 Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
+Route::post('listar-preguntas-de-profesor', [PreguntaController::class, 'listarPreguntasdeProfesor']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 

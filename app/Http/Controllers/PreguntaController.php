@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Resources\PreguntaResource;
+use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
+use App\Models\Fase;
 use App\Models\Pregunta;
 
 class PreguntaController extends Controller
@@ -65,4 +68,18 @@ class PreguntaController extends Controller
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
         }
     }
+
+    public function listarPreguntasdeProfesor(Request $request){
+        $fase = Fase::findOrFail($request->idFase);
+        $evaluacion = $fase->evaluacion()->first();
+        $preguntas = $fase->preguntas()->get();
+        foreach($preguntas as $pregunta){
+            $alternativas = $pregunta->alternativas()->get();
+            $pregunta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
+        }
+
+        return response()->json(PreguntaResource::collection($preguntas), 200);
+    }
+
 }
