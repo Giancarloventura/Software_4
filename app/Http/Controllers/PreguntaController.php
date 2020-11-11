@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlternativaPregunta;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
@@ -13,16 +14,16 @@ class PreguntaController extends Controller
         try
         {
 
-            $usuario = User::select('id')->where('codigo', $request->codigo)->first();
+            //$usuario = User::select('id')->where('codigo', $request->codigo)->first();
 
-            if(is_null($usuario))
+            /*if(is_null($usuario))
             {
                 $usuario = new User();
                 $usuario->email = $request->email;
                 $usuario->codigo = $request->codigo;
 
                 $usuario->save();
-            }
+            }*/
 
             $pregunta = new Pregunta();
             $pregunta->id = $request->id;
@@ -32,13 +33,42 @@ class PreguntaController extends Controller
             $pregunta->tipo = $request->tipo;
             if($request->tipo==0){
                 $pregunta->tipo_marcado = NULL;
+                $pregunta->nombre= $request->nombre;
+
+                //$pregunta->tusuario_id_creacion = $usuario->id;
+                //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+                $pregunta->fecha_actualizacion = NULL;
+
+                $pregunta->save();
             } else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
+                $pregunta->nombre = NULL;
+
+                //$pregunta->tusuario_id_creacion = $usuario->id;
+                //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+                $pregunta->fecha_actualizacion = NULL;
+
+                $pregunta->save();
+
+                $alternativas = $request->alternativas;
+
+                foreach($alternativas as $alternativa){
+                    $alt = new AlternativaPregunta();
+
+                    $alt->id = $alternativa['id'];
+                    $alt->enunciado = $alternativa['enunciado'];
+                    $alt->ruta_archivo = $alternativa['ruta_archivo'];
+                    $alt->es_imagen = $alternativa['es_imagen'];
+                    $alt->es_correcta = $alternativa['es_correcta'];
+                    $alt->idtPregunta = $pregunta->id;
+
+                    //$alt->tusuario_id_creacion = $usuario->id;
+                    //$alt->tusuario_id_creacion = $request->tusuario_id_creacion;
+                    $alt->fecha_actualizacion = NULL;
+                    $alt->save();
+                }
+
             }
-            $pregunta->tusuario_id_creacion = $usuario->id;
-            $pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
-            $pregunta->fecha_actualizacion = NULL;
-            $pregunta->save();
             return response()->json($pregunta);
         }
         catch (Exception $exception)

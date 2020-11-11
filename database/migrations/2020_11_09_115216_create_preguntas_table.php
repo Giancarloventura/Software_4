@@ -16,6 +16,7 @@ class CreatePreguntasTable extends Migration
         Schema::create('tPregunta', function (Blueprint $table) {
             $table->id();
             $table->string('enunciado', 1000);
+            $table->string('nombre', 150);
             $table->integer('cant_intentos');
             $table->decimal('puntaje',6,2);
             $table->integer('tipo');
