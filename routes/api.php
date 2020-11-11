@@ -114,7 +114,7 @@ Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'lis
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 Route::post('listar-preguntas-de-profesor', [PreguntaController::class, 'listarPreguntasdeProfesor']);
-Route::post('guardar-pregunta', [RespuestaController::class, 'guardarRespuesta']);
+Route::post('guardar-respuesta', [RespuestaController::class, 'guardarRespuesta']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
