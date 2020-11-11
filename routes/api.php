@@ -56,6 +56,7 @@ Route::get('listar-participantes-sin-asignar/{id}', [HorarioController::class, '
 Route::post('retirar-participante', [HorarioController::class, 'retirarParticipante']);
 Route::post('agregar-participante', [HorarioController::class, 'agregarParticipante']);
 Route::post('subir-csv-participantes/{id}', [HorarioController::class, 'subirCSVParticipantes']);
+Route::post('rol-usuario-horario', [HorarioController::class, 'rolUsuario']);
 
 Route::post('crear-participante', [UsuarioController::class, 'crearParticipante']);
 
