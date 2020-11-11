@@ -72,10 +72,7 @@ class PreguntaController extends Controller
                 }
 
             }
-            $pregunta->tusuario_id_creacion = $usuario->id;
-            $pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
-            $pregunta->fecha_actualizacion = NULL;
-            $pregunta->save();
+
             return response()->json($pregunta);
         }
         catch (Exception $exception)
