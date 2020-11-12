@@ -6,6 +6,7 @@ use App\Models\AlternativaPregunta;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pregunta;
+use App\Http\Controllers\AlternativaPreguntaController;
 
 class PreguntaController extends Controller
 {
@@ -85,7 +86,10 @@ class PreguntaController extends Controller
                 $pregunta->nombre = NULL;
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
+                //Elimina alternativas existentes x idtPregunta:
+                app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
 
+                //Agrega alternativas:
                 $alternativas = $request->alternativas;
 
                 foreach($alternativas as $alternativa){
@@ -109,5 +113,10 @@ class PreguntaController extends Controller
         {
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
         }
+    }
+
+    public function eliminarPregunta(Request $request){
+        //Eliminado Logico
+
     }
 }
