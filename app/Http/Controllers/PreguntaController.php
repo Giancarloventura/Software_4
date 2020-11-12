@@ -18,7 +18,6 @@ class PreguntaController extends Controller
         try
         {
             $pregunta = new Pregunta();
-            $pregunta->id = $request->id;
 
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
