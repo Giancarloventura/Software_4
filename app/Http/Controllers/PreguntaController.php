@@ -78,6 +78,7 @@ class PreguntaController extends Controller
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
+            $pregunta->comentario = $request->feedback;
 
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
