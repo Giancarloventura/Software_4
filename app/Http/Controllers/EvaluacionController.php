@@ -138,11 +138,14 @@ class EvaluacionController extends Controller
                 //Crear la nueva pregunta a partir de la ya existente
                 $preguntaCopia = Pregunta::findOrFail($idPreguntaCopia->idtPregunta);
                 $pregunta = new Pregunta();
+                $pregunta->nombre = $preguntaCopia->nombre;
                 $pregunta->enunciado = $preguntaCopia->enunciado;
                 $pregunta->cant_intentos = $preguntaCopia->cant_intentos;
                 $pregunta->puntaje = $preguntaCopia->puntaje;
                 $pregunta->tipo = $preguntaCopia->tipo;
                 $pregunta->tipo_marcado = $preguntaCopia->tipo_marcado;
+                $pregunta->posicion = $preguntaCopia->posicion;
+                $pregunta->comentario = $preguntaCopia->comentario;
                 $pregunta->tusuario_id_creacion = $preguntaCopia->tusuario_id_creacion;
                 $pregunta->tusuario_id_actualizacion = $preguntaCopia->tusuario_id_actualizacion;
                 $pregunta->save();
