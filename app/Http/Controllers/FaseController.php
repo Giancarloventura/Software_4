@@ -10,6 +10,7 @@ use App\Models\FasePregunta;
 use App\Models\Pregunta;
 use Illuminate\Http\Request;
 use App\Models\Horario;
+use App\Models\Respuesta;
 use App\Models\Fase;
 use App\Models\User;
 use App\Http\Requests\CrearFaseRequest;
@@ -197,17 +198,21 @@ class FaseController extends Controller
                 //        ->where('idtFase', $id)
                   //      ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
                     //    ->count()+1;
+            $respuesta = Respuesta::where('tusuario_id_creacion', $alumno->id)->where('idtFase', $id)->orderBy('fecha_actualizacion', 'desc')->first();
+            if($respuesta == null){
+                $ultima = 0;
+            }
+            else{
+                $pregunta = Pregunta::find($respuesta->idtPregunta);
+                $ultima = $pregunta->posicion;
+            }
             $tmp = [
                 'nombre'=> $alumno -> nombre,
                 'apellido_parterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
                 'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
-                'ultima_pregunta' => Pregunta::find(DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
-                    ->where('tusuario_id_creacion', $alumno->id)
-                    ->where('idtFase', $id )
-                    ->orderBy('fecha_actualizacion', 'desc')
-                    ->first())->posicion,
+                'ultima_pregunta' => $ultima,
 
             ];
             $alumnos_collection[] = $tmp;
