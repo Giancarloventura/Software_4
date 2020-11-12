@@ -93,6 +93,7 @@ Route::post('subir-csv-horarios', [HorarioController::class, 'importarHorarios']
 Route::post('agregar-pregunta', [PreguntaController::class, 'agregarPregunta']);
 Route::post('editar-pregunta', [PreguntaController::class, 'editarPregunta']);
 
+Route::post('agregar-pregunta-x-fase', [FaseController::class, 'agregarPreguntaXFase']);
 Route::post('agregar-alternativa-pregunta', [AlternativaPregunta::class, 'agregarAlternativa']);
 
 Route::post('cursos-usuario', [CursoController::class, 'listarCursosXUsuario']);
@@ -114,15 +115,14 @@ Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'lis
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 Route::post('listar-preguntas-de-profesor', [PreguntaController::class, 'listarPreguntasdeProfesor']);
+Route::post('guardar-respuesta', [RespuestaController::class, 'guardarRespuesta']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
 
 Route::post('comentario-alumno', [RespuestaController::class, 'agregarComentarioAlumno']);
-Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
-
 
 
 Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);

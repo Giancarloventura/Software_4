@@ -84,4 +84,9 @@ class User extends Authenticatable
         return $this->hasMany(Respuesta::class, 'tusuario_id_creacion');
 
     }
+
+    public function fases(){
+        return $this->belongsToMany(Fase::class, 'tUsuario_tFase', 'idtUsuario', 'idtFase');
+
+    }
 }

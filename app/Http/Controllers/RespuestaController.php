@@ -20,6 +20,7 @@ class RespuestaController extends Controller
         $respuesta->puntaje_obtenido = $request->puntaje;
         $respuesta->comentario = $request->comentario;
         $respuesta->tUsuario_id_actualizacion = $request->idProfesor;
+        $respuesta->estado = 2;
         $respuesta->save();
 
         return response()->json("Nota modificada correctamente", 200);
@@ -89,6 +90,44 @@ class RespuestaController extends Controller
 
         return response()->json($preguntas_respuestas, 200);
 
+    }
+
+
+    public function guardarRespuesta (Request $request){
+        $respuesta = Respuesta::find($request->id);
+        $respuesta->numero_intento = $respuesta->numero_intento + 1;
+        if($request->tipo == 0){
+            $respuesta->redaccion = $request->texto;
+        }
+        else{
+            $respuesta->alternativas()->detach();
+            $opciones = $request->opciones;
+            foreach($opciones as $opcion){
+                if($opcion['marcado']==1)
+                    $respuesta->alternativas()->attach($opcion['id']);
+            }
+        }
+        $respuesta->estado = 1;
+        $pregunta = $respuesta->pregunta()->first();
+        $alternativas = $pregunta->alternativas()->get();
+        $puntaje_completo = 1;
+        foreach($opciones as $opcion){
+            foreach($alternativas as $alternativa){
+                if($alternativa->id == $alternativaRespuesta->id){
+                    if($opcion['marcado']!==$alternativa->es_correcta)
+                        $puntaje_completo = 0;
+                    break;
+                }
+            }
+            if($puntaje_completo==0) break;
+        }
+        if($puntaje_completo == 1){
+            $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
+        }
+        else{
+            $respuesta->puntaje_obtenido = 0;
+        }
+        $respuesta->save();
     }
 
 }

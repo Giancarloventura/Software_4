@@ -14,20 +14,37 @@ class Fase extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'nombre' => $this->nombre,
-            'fecha_inicio' => $this->fecha_inicio,
-            'fecha_fin' => $this->fecha_fin,
-            'hora_inicio' => $this->hora_inicio,
-            'hora_fin' => $this->hora_fin,
-            'puntaje' => $this->puntaje,
-            'sincrona' => $this->sincrona,
-            'preguntas_aleatorias' => $this->preguntas_aleatorias,
-            'preguntas_mostradas' => $this->preguntas_mostradas,
-            'disposicion_preguntas' => $this->disposicion_preguntas,
-            'permitir_retroceso' => $this->permitir_retroceso
-        ];
+        if(isset($this->esta_corregido))
+            return [
+                'id' => $this->id,
+                'nombre' => $this->nombre,
+                'esta_corregido' => $this->esta_corregido,
+                'fecha_inicio' => $this->fecha_inicio,
+                'fecha_fin' => $this->fecha_fin,
+                'hora_inicio' => $this->hora_inicio,
+                'hora_fin' => $this->hora_fin,
+                'puntaje' => $this->puntaje,
+                'sincrona' => $this->sincrona,
+                'preguntas_aleatorias' => $this->preguntas_aleatorias,
+                'preguntas_mostradas' => $this->preguntas_mostradas,
+                'disposicion_preguntas' => $this->disposicion_preguntas,
+                'permitir_retroceso' => $this->permitir_retroceso
+            ];
+        else
+            return [
+                'id' => $this->id,
+                'nombre' => $this->nombre,
+                'fecha_inicio' => $this->fecha_inicio,
+                'fecha_fin' => $this->fecha_fin,
+                'hora_inicio' => $this->hora_inicio,
+                'hora_fin' => $this->hora_fin,
+                'puntaje' => $this->puntaje,
+                'sincrona' => $this->sincrona,
+                'preguntas_aleatorias' => $this->preguntas_aleatorias,
+                'preguntas_mostradas' => $this->preguntas_mostradas,
+                'disposicion_preguntas' => $this->disposicion_preguntas,
+                'permitir_retroceso' => $this->permitir_retroceso
+            ];
     }
 }
 

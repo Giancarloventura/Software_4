@@ -7,6 +7,7 @@ use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
 use App\Http\Requests\ObtenerCantidadPreguntasRequest;
 use App\Models\FasePregunta;
+use App\Models\Pregunta;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Fase;
@@ -81,6 +82,52 @@ class FaseController extends Controller
         }
 
 
+    }
+
+    public function agregarPreguntaXFase(Request $request){
+        try{
+
+            //$usuario = User::select('id')->where('codigo', $request->codigo)->first();
+
+            /*if(is_null($usuario))
+            {
+                $usuario = new User();
+                $usuario->email = $request->email;
+                $usuario->codigo = $request->codigo;
+
+                $usuario->save();
+            }*/
+
+            $pregunta = new Pregunta();
+            $fasePregunta = new FasePregunta();
+
+            //Preguntas:
+            $pregunta->id = $request->idPregunta;
+            $pregunta->tipo = $request->tipo;
+            if($pregunta->tipo==0){
+                $pregunta->tipo_marcado = NULL;
+            } else{
+                $pregunta->tipo_marcado = $request->tipo_marcado;
+            }
+            $pregunta->posicion = $request->posicion;
+
+            //$pregunta->tusuario_id_creacion = $usuario->id;
+            //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+            $pregunta->fecha_actualizacion = NULL;
+            $pregunta->save();
+
+            //FaseXPregunta:
+            $fasePregunta->idtFase = $request->idFase;
+            $fasePregunta->idtPregunta = $pregunta->id;
+            //$fasePregunta->tusuario_id_creacion = $usuario->id;
+            //$fasePregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+            $fasePregunta->fecha_actualizacion = NULL;
+            $fasePregunta->save();
+            return response()->json($fasePregunta);
+
+        }catch (Exception $exception){
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
     }
 
     public function listarFases($id)
