@@ -25,7 +25,7 @@ class AlternativaPreguntaController extends Controller
 
             $alternativa = new AlternativaPregunta();
 
-            $alternativa->id = $request->id;
+            //$alternativa->id = $request->id;
             $alternativa->enunciado = $request->enunciado;
             $alternativa->ruta_archivo = $request->ruta_archivo;
             $alternativa->es_imagen = $request->es_imagen;
