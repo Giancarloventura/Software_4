@@ -13,6 +13,8 @@ class FasePregunta extends Model
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_actualizacion';
 
+    protected $hidden = ['id'];
+
     public function fase()
     {
         return $this->belongsTo(Fase::class, 'idtFase');
