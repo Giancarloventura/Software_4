@@ -44,4 +44,21 @@ class AlternativaPreguntaController extends Controller
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
         }
     }
+
+    public function eliminarAlternativa(int $idtPregunta){
+        try{
+
+            $alternativas = AlternativaPregunta::select('id')->where('idtPregunta',$idtPregunta)->get();
+            echo $alternativas;
+            foreach($alternativas as $alt){
+                $alternativa = AlternativaPregunta::findOrFail($alt->id);
+                $alternativa->delete();
+            }
+            //$alternativas->delete();
+            return response()->json(['status' => 'success'], 200);
+
+        }catch (Exception $e){
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
+    }
 }

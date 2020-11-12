@@ -99,6 +99,7 @@ Route::post('subir-csv-horarios', [HorarioController::class, 'importarHorarios']
 // RUTAS PARA LAS PREGUNTAS
 Route::post('agregar-pregunta', [PreguntaController::class, 'agregarPregunta']);
 Route::post('editar-pregunta', [PreguntaController::class, 'editarPregunta']);
+Route::post('eliminar-pregunta', [PreguntaController::class, 'eliminarPregunta']);
 Route::post('intercambiar-orden', [PreguntaController::class, 'intercambiarOrden']);
 
 Route::post('agregar-pregunta-x-fase', [FaseController::class, 'agregarPreguntaXFase']);

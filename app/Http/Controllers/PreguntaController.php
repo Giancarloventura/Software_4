@@ -9,6 +9,7 @@ use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Fase;
 use App\Models\Pregunta;
+use App\Http\Controllers\AlternativaPreguntaController;
 
 class PreguntaController extends Controller
 {
@@ -89,7 +90,10 @@ class PreguntaController extends Controller
                 $pregunta->nombre = NULL;
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
+                //Elimina alternativas existentes x idtPregunta:
+                app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
 
+                //Agrega alternativas:
                 $alternativas = $request->alternativas;
 
                 foreach($alternativas as $alternativa){
@@ -150,4 +154,9 @@ class PreguntaController extends Controller
         return response()->json(PreguntaResource::collection($preguntas), 200);
     }
 
+
+    public function eliminarPregunta(Request $request){
+        //Eliminado Logico
+
+    }
 }
