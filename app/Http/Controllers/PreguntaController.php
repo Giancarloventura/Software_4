@@ -91,7 +91,7 @@ class PreguntaController extends Controller
                 $pregunta->save();
 
                 $alternativas = $request->alternativas;
-                
+
                 foreach($alternativas as $alternativa){
                     $alt = new AlternativaPregunta();
 
@@ -113,6 +113,28 @@ class PreguntaController extends Controller
         {
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
         }
+    }
+
+    public function intercambiarOrden(Request $request)
+    {
+        try {
+            $pregunta1 = Pregunta::findOrFail($request->idtPregunta1);
+            $pregunta2 = Pregunta::findOrFail($request->idtPregunta2);
+
+            $aux = $pregunta1->posicion;
+            $pregunta1->posicion = $pregunta2->posicion;
+            $pregunta2->posicion = $aux;
+
+            $pregunta1->save();
+            $pregunta2->save();
+
+            return response()->json(['status' => 'success'], 200);
+        }
+        catch (Exception $exception)
+        {
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
+
     }
 
     public function listarPreguntasdeProfesor(Request $request){
