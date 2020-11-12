@@ -102,7 +102,7 @@ class FaseController extends Controller
             $fasePregunta = new FasePregunta();
 
             //Preguntas:
-            $pregunta->id = $request->idPregunta;
+            //$pregunta->id = $request->idPregunta;
             $pregunta->tipo = $request->tipo;
             $pregunta->estado = 'ACT';
             if($pregunta->tipo==0){

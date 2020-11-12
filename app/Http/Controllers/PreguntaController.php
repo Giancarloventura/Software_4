@@ -18,7 +18,7 @@ class PreguntaController extends Controller
         try
         {
             $pregunta = new Pregunta();
-            $pregunta->id = $request->id;
+            //$pregunta->id = $request->id;
 
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
@@ -31,7 +31,6 @@ class PreguntaController extends Controller
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
                 $pregunta->fecha_actualizacion = NULL;
-
                 $pregunta->save();
             } else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
@@ -40,7 +39,6 @@ class PreguntaController extends Controller
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
                 $pregunta->fecha_actualizacion = NULL;
-
                 $pregunta->save();
 
                 $alternativas = $request->alternativas;
