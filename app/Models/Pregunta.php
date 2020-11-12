@@ -9,9 +9,6 @@ class Pregunta extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
-
     protected $table = 'tPregunta';
 
     const CREATED_AT = 'fecha_creacion';
