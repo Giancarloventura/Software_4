@@ -20,6 +20,7 @@ class RespuestaController extends Controller
         $respuesta->puntaje_obtenido = $request->puntaje;
         $respuesta->comentario = $request->comentario;
         $respuesta->tUsuario_id_actualizacion = $request->idProfesor;
+        $respuesta->estado = 2;
         $respuesta->save();
 
         return response()->json("Nota modificada correctamente", 200);
