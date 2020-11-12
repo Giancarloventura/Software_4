@@ -10,6 +10,7 @@ use App\Http\Requests\ListarHorarioXCursoXCicloRequest;
 use App\Http\Requests\ListarParticipanteXHorarioRequest;
 use App\Http\Requests\ObtenerIDHorarioRequest;
 use App\Http\Requests\RetirarParticipanteRequest;
+use App\Http\Requests\RolUsuarioRequest;
 use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use App\Models\Horario;
@@ -328,5 +329,17 @@ class HorarioController extends Controller
             ->get();
 
         return response()->json($horarios, 200);
+    }
+
+    public function rolUsuario(RolUsuarioRequest $request)
+    {
+        $rol = UsuarioRol::select('tUsuario_tRol.idtRol')
+            ->where('tUsuario_tRol.idtUsuario', '=', $request->idUsuario)
+            ->where('tUsuario_tRol.idtHorario', '=', $request->idHorario)
+            ->first();
+
+        $idRol = $rol->idtRol;
+
+        return response()->json($idRol, 200);
     }
 }
