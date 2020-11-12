@@ -15,7 +15,6 @@ use App\Models\FasePregunta;
 use App\Models\AlternativaPregunta;
 use App\Models\User;
 use App\Models\Fase;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Fase as FaseResource;
 
 
