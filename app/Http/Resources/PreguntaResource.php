@@ -27,7 +27,7 @@ class PreguntaResource extends JsonResource
                 'tipoMarcado' => $this->tipo_marcado,
                 'opciones' => $this->opciones,
                 'opcionesCorrectas' => $this->opcionesCorrectas,
-                'feedback' => $this->feedback,
+                'feedback' => $this->comentario,
                 'intentosMax' => $this->cant_intentos,
             ];
         else

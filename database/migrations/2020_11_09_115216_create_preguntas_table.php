@@ -22,6 +22,8 @@ class CreatePreguntasTable extends Migration
             $table->integer('tipo');
             $table->integer('tipo_marcado');
             $table->integer('posicion');
+            $table->string('comentario', 400);
+            $table->string('estado', 3);
             $table->timestamp('fecha_creacion')->nullable();
             $table->timestamp('fecha_actualizacion')->nullable();
             $table->foreignId('tusuario_id_creacion')->nullable()->constrained('tUsuario');

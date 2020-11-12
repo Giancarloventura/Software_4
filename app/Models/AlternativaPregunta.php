@@ -62,6 +62,6 @@ class AlternativaPregunta extends Model
      */
     public function respuestas()
     {
-        return $this->belongsToMany(Respuesta::class, 'tRespuesta_tAlternativa', 'idtAlternativa', 'idtRespuesta');
+        return $this->belongsToMany(Respuesta::class, 'tRespuesta_tAlternativa_Pregunta', 'idtAlternativa', 'idtRespuesta');
     }
 }

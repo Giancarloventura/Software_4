@@ -29,24 +29,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// RUTAS PARA LAS EVALUACIONES
 Route::post('crear-evaluacion', [EvaluacionController::class, 'crearEvaluacion']);
 Route::get('evaluaciones', [EvaluacionController::class, 'listarEvaluaciones']);
 Route::post('evaluacion-codigo', [EvaluacionController::class, 'obtenerEvaluacionXCodigo']);
 Route::post('obtener-fases-de-evaluacion', [EvaluacionController::class, 'obtenerFasesXEvaluacion']);
 Route::post('copiar-evaluacion', [EvaluacionController::class, 'copiarEvaluacion']);
 
+// RUTAS PARA LOS CURSOS
 Route::get('cursos-actuales', [CursoController::class, 'listarCursosActuales']);
 Route::post('listarLaboratoriosPorHorario', [CursoController::class, 'listarLaboratoriosPorHorario']);
 Route::post('insertar-curso', [CursoController::class, 'insertarCurso']);
 Route::post('editar-curso', [CursoController::class, 'editarCurso']);
 Route::post('eliminar-curso', [CursoController::class, 'eliminarCurso']);
 
+// RUTAS PARA LOS SEMESTRES
 Route::get('semestre-actual', [SemestreController::class, 'semestreActual']);
 Route::get('listar-semestres',[SemestreController::class, 'listarSemestres']);
 Route::post('crear-semestres',[SemestreController::class, 'crearSemestre']);
 Route::post('editar-semestres',[SemestreController::class, 'editarSemestre']);
 Route::post('eliminar-semestre',[SemestreController::class, 'eliminarSemestre']);
 
+// RUTAS PARA LOS HORARIOS
 Route::post('insertar-horario', [HorarioController::class, 'insertarHorario']);
 Route::post('editar-horario', [HorarioController::class, 'editarHorario']);
 Route::post('eliminar-horario', [HorarioController::class, 'eliminarHorario']);
@@ -58,8 +62,10 @@ Route::post('agregar-participante', [HorarioController::class, 'agregarParticipa
 Route::post('subir-csv-participantes/{id}', [HorarioController::class, 'subirCSVParticipantes']);
 Route::post('rol-usuario-horario', [HorarioController::class, 'rolUsuario']);
 
+// RUTAS PARA LOS USUARIOS
 Route::post('crear-participante', [UsuarioController::class, 'crearParticipante']);
 
+// RUTAS PARA LAS FASES
 Route::post('crear-fase', [FaseController::class, 'crearFase']);
 Route::post('editar-fase', [FaseController::class, 'editarFase']);
 Route::post('eliminar-fase', [FaseController::class, 'eliminarFase']);
@@ -90,8 +96,11 @@ Route::post('subir-csv-horarios-vista-previa', [HorarioController::class, 'impor
 
 Route::post('subir-csv-horarios', [HorarioController::class, 'importarHorarios']);
 
+// RUTAS PARA LAS PREGUNTAS
 Route::post('agregar-pregunta', [PreguntaController::class, 'agregarPregunta']);
 Route::post('editar-pregunta', [PreguntaController::class, 'editarPregunta']);
+Route::post('eliminar-pregunta', [PreguntaController::class, 'eliminarPregunta']);
+Route::post('intercambiar-orden', [PreguntaController::class, 'intercambiarOrden']);
 
 Route::post('agregar-pregunta-x-fase', [FaseController::class, 'agregarPreguntaXFase']);
 Route::post('agregar-alternativa-pregunta', [AlternativaPregunta::class, 'agregarAlternativa']);

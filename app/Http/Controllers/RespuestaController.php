@@ -56,6 +56,7 @@ class RespuestaController extends Controller
                 $respuesta->tusuario_id_actualizacion = $request->idUsuario;
                 $respuesta->idtPregunta = $pregunta->id;
                 $respuesta->numero_intento = 0;
+                $respuesta->comentario = $pregunta->comentario;
                 $respuesta->fecha_actualizacion = null;
                 if($alternativas->count()>0){
                     $respuesta->es_marcada = 1;
@@ -81,7 +82,6 @@ class RespuestaController extends Controller
             $respuesta->tipo = $pregunta->tipo;
             $respuesta->tipoMarcado = $pregunta->tipo_marcado;
             $respuesta->opciones = AlternativaResource::collection($alternativas);
-            $pregunta->feedback = $respuesta->comentario;
             $pregunta->opciones = AlternativaResource::collection($alternativas);
             $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
             $aux = collect(['pregunta' => new PreguntaResource($pregunta), 'respuesta' => new RespuestaResource($respuesta)]);
@@ -98,6 +98,9 @@ class RespuestaController extends Controller
         $respuesta->numero_intento = $respuesta->numero_intento + 1;
         if($request->tipo == 0){
             $respuesta->redaccion = $request->texto;
+            $respuesta->estado = 1;
+        
+            $respuesta->save();
         }
         else{
             $respuesta->alternativas()->detach();
@@ -106,28 +109,34 @@ class RespuestaController extends Controller
                 if($opcion['marcado']==1)
                     $respuesta->alternativas()->attach($opcion['id']);
             }
-        }
-        $respuesta->estado = 1;
-        $pregunta = $respuesta->pregunta()->first();
-        $alternativas = $pregunta->alternativas()->get();
-        $puntaje_completo = 1;
-        foreach($opciones as $opcion){
-            foreach($alternativas as $alternativa){
-                if($alternativa->id == $alternativaRespuesta->id){
-                    if($opcion['marcado']!==$alternativa->es_correcta)
-                        $puntaje_completo = 0;
-                    break;
+            $pregunta = $respuesta->pregunta()->first();
+            $alternativas = $pregunta->alternativas()->get();
+            $puntaje_completo = 1;
+            foreach($opciones as $opcion){
+                foreach($alternativas as $alternativa){
+                    if($alternativa->id == $opcion['id']){
+                        if($opcion['marcado']!==$alternativa->es_correcta)
+                            $puntaje_completo = 0;
+                        break;
+                    }
                 }
+                if($puntaje_completo==0) break;
             }
-            if($puntaje_completo==0) break;
+            if($puntaje_completo == 1){
+                $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
+            }
+            else{
+                $respuesta->puntaje_obtenido = 0;
+            }
+            $respuesta->estado = 2;
+        
+            $respuesta->save();
+            return response()->json([
+                "intentos" => $respuesta->numero_intento,
+                "puntajeAsignado" => $respuesta->puntaje_obtenido,
+            ]);
         }
-        if($puntaje_completo == 1){
-            $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
-        }
-        else{
-            $respuesta->puntaje_obtenido = 0;
-        }
-        $respuesta->save();
+        
     }
 
 }
