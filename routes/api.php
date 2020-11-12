@@ -131,3 +131,5 @@ Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPr
 
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
+Route::post('resumen-notas-alumno', [EvaluacionController::class, 'resumenNotasAlumno']);
+
