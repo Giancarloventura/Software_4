@@ -102,10 +102,30 @@ class RespuestaController extends Controller
             $respuesta->alternativas()->detach();
             $opciones = $request->opciones;
             foreach($opciones as $opcion){
-                $respuesta->alternativas()->attach($opcion['id']);
+                if($opcion['marcado']==1)
+                    $respuesta->alternativas()->attach($opcion['id']);
             }
         }
         $respuesta->estado = 1;
+        $pregunta = $respuesta->pregunta()->first();
+        $alternativas = $pregunta->alternativas()->get();
+        $puntaje_completo = 1;
+        foreach($opciones as $opcion){
+            foreach($alternativas as $alternativa){
+                if($alternativa->id == $alternativaRespuesta->id){
+                    if($opcion['marcado']!==$alternativa->es_correcta)
+                        $puntaje_completo = 0;
+                    break;
+                }
+            }
+            if($puntaje_completo==0) break;
+        }
+        if($puntaje_completo == 1){
+            $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
+        }
+        else{
+            $respuesta->puntaje_obtenido = 0;
+        }
         $respuesta->save();
     }
 

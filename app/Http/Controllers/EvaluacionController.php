@@ -12,7 +12,9 @@ use App\Http\Requests\ListarEvaluacionXHorarioRequest;
 use App\Models\Pregunta;
 use App\Models\FasePregunta;
 use App\Models\AlternativaPregunta;
+use App\Models\User;
 use App\Models\Fase;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Fase as FaseResource;
 
 class EvaluacionController extends Controller
@@ -67,9 +69,20 @@ class EvaluacionController extends Controller
     public function obtenerFasesXEvaluacion(Request $request)
     {
         $evaluacion = Evaluacion::find($request->idEvaluacion);
-
         $fases = $evaluacion->fases()->orderBy('fecha_inicio')->orderBy('hora_inicio')->get();
-
+        if(isset($request->idUsuario)){
+            foreach($fases as $fase){
+                if(!(DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase', $fase->id)->exists())){
+                    $usuario = User::find($request->idUsuario);
+                    $usuario->fases()->attach($fase->id);
+                    $fase->esta_corregido = 0;
+                }
+                else{
+                    $esta_corregido = DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase', $fase->id)->first()->esta_corregida;
+                    $fase->esta_corregido= $esta_corregido;
+                }
+            }
+        }
         return response()->json([
             'nombreEvaluacion'=>$evaluacion->nombre,
             'fases'=>FaseResource::collection($fases)
