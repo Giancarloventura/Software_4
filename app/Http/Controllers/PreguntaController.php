@@ -90,7 +90,7 @@ class PreguntaController extends Controller
                 $pregunta->save();
 
                 $alternativas = $request->alternativas;
-                $pregunta->alternativas()->delete;
+                $pregunta->alternativas()->delete();
                 foreach($alternativas as $alternativa){
                     $alt = new AlternativaPregunta();
 
