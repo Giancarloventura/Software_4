@@ -202,7 +202,7 @@ class FaseController extends Controller
                 'apellido_parterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
-                'preguntas_respondidas_count' => $alumno->respuestas->whereNotNull('fecha_actualizacion')->count(),
+                'preguntas_respondidas_count' => $alumno->respuestas()->whre('idtFase', $id)->where('estado','<>',0)->count(),
                 'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
                     ->where('tusuario_id_creacion', $alumno->id)
                     ->where('idtFase', $id )
