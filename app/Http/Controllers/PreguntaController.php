@@ -159,6 +159,13 @@ class PreguntaController extends Controller
 
     public function eliminarPregunta(Request $request){
         //Eliminado Logico
-
+        try{
+            $pregunta = Pregunta::findOrFail($request->id);
+            $pregunta->estado = 'INA';
+            $pregunta->save();
+            return response()->json(['status' => 'success'], 200);
+        }catch (Exception $exception){
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
     }
 }

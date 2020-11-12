@@ -104,6 +104,7 @@ class FaseController extends Controller
             //Preguntas:
             $pregunta->id = $request->idPregunta;
             $pregunta->tipo = $request->tipo;
+            $pregunta->estado = 'ACT';
             if($pregunta->tipo==0){
                 $pregunta->tipo_marcado = NULL;
             } else{
