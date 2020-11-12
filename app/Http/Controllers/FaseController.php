@@ -185,10 +185,7 @@ class FaseController extends Controller
     public function getSeguimiento($id)
     {
 
-        $alumnos  = User::with(['respuestas' => function($query) use ($id){
-            $query->where('idtFase', $id);
-
-        } ])->whereHas('respuestas')->get();
+        $alumnos  = Fase::find($id)->evaluacion()->first()->horario()->first()->usuarios()->wherePivot('idtRol',5)->get();
 
         $alumnos_collection = [];
 
