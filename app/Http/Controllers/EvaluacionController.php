@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CopiarEvaluacionRequest;
 use App\Http\Requests\ObtenerEvaluacionXCodigoRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Evaluacion;
 use App\Models\Horario;
 use App\Http\Requests\CrearEvaluacionRequest;
@@ -14,8 +15,8 @@ use App\Models\FasePregunta;
 use App\Models\AlternativaPregunta;
 use App\Models\User;
 use App\Models\Fase;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Fase as FaseResource;
+
 
 class EvaluacionController extends Controller
 {
@@ -180,6 +181,67 @@ class EvaluacionController extends Controller
         }
 
         return response()->json('Evaluacion copiada exitosamente', 200);
+    }
+
+    public function resumenNotasAlumno(Request $request){
+        $arregloEval = array();
+        $puntaje_tot_eval=0;
+        $estaCorregidoEval=true;
+
+
+        $evaluaciones=Evaluacion::where('idtHorario', '=', $request->idtHorario)->get();
+
+        foreach ($evaluaciones as $evaluacion) {
+
+            $arregloFase=array();
+            $fases=Fase::where('idtEvaluacion', '=', $evaluacion->id)->get();
+
+            foreach ($fases as $fase){
+
+                $puntaje_obtenido=DB::table('tUsuario_tFase')
+                    ->select(DB::raw('tUsuario_tFase.puntaje_obtenido'))
+                    ->where('idtFase','=',$fase->id, 'and')
+                    ->where('idtUsuario', '=', $request->idtUsuario)
+                    ->first();
+
+                $estaCorregidoFase=DB::table('tUsuario_tFase')
+                    ->select(DB::raw('tUsuario_tFase.esta_corregida'))
+                    ->where('idtFase','=',$fase->id, 'and')
+                    ->where('idtUsuario', '=', $request->idtUsuario)
+                    ->first();
+
+
+                if($estaCorregidoFase->esta_corregida==0) {
+                    $boolEstaCorregidoFase=false;
+                    $estaCorregidoEval = false;
+                }
+                else{
+                    $boolEstaCorregidoFase=true;
+                }
+
+                $mi_fase=['nombre'=>$fase->nombre,
+                    'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
+                    'puntajeMax'=>$fase->puntaje,
+                    'estaCorregido'=>$boolEstaCorregidoFase];
+
+                $puntaje_tot_eval+=$puntaje_obtenido->puntaje_obtenido;
+                array_push($arregloFase, $mi_fase);
+            }
+
+            $mi_eval=['nombre'=>$evaluacion->nombre,
+                'puntaje'=>$puntaje_tot_eval,
+                'puntajeMax'=>$evaluacion->puntaje,
+                'listaFases'=>$arregloFase,
+                'estaCorregido'=>$estaCorregidoEval,
+                'idEvaluacion'=>$evaluacion->id];
+
+            array_push($arregloEval, $mi_eval);
+
+
+        }
+
+        return response()->json($arregloEval, 200);
+
     }
 }
 
