@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
+use App\Http\Requests\ObtenerCantidadPreguntasRequest;
+use App\Models\FasePregunta;
+use App\Models\Pregunta;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Fase;
@@ -81,6 +84,52 @@ class FaseController extends Controller
 
     }
 
+    public function agregarPreguntaXFase(Request $request){
+        try{
+
+            //$usuario = User::select('id')->where('codigo', $request->codigo)->first();
+
+            /*if(is_null($usuario))
+            {
+                $usuario = new User();
+                $usuario->email = $request->email;
+                $usuario->codigo = $request->codigo;
+
+                $usuario->save();
+            }*/
+
+            $pregunta = new Pregunta();
+            $fasePregunta = new FasePregunta();
+
+            //Preguntas:
+            $pregunta->id = $request->idPregunta;
+            $pregunta->tipo = $request->tipo;
+            if($pregunta->tipo==0){
+                $pregunta->tipo_marcado = NULL;
+            } else{
+                $pregunta->tipo_marcado = $request->tipo_marcado;
+            }
+            $pregunta->posicion = $request->posicion;
+
+            //$pregunta->tusuario_id_creacion = $usuario->id;
+            //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+            $pregunta->fecha_actualizacion = NULL;
+            $pregunta->save();
+
+            //FaseXPregunta:
+            $fasePregunta->idtFase = $request->idFase;
+            $fasePregunta->idtPregunta = $pregunta->id;
+            //$fasePregunta->tusuario_id_creacion = $usuario->id;
+            //$fasePregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
+            $fasePregunta->fecha_actualizacion = NULL;
+            $fasePregunta->save();
+            return response()->json($fasePregunta);
+
+        }catch (Exception $exception){
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
+    }
+
     public function listarFases($id)
     {
         $fases = Fase::where('idtEvaluacion', $id)->get();
@@ -136,29 +185,39 @@ class FaseController extends Controller
 
         $alumnos  = User::with(['respuestas' => function($query) use ($id){
             $query->where('idtFase', $id);
-        
+
         } ])->whereHas('respuestas')->get();
 
         $alumnos_collection = [];
 
         foreach ($alumnos as $alumno){
-            $last_count = DB::table('tRespuesta')
-                        
-                        ->where('tusuario_id_creacion', $alumno->id)
-                        ->where('idtFase', $id)
-                        ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
-                        ->count()+1;
+            //$last_count = DB::table('tRespuesta')
+              //          ->where('tusuario_id_creacion', $alumno->id)
+                //        ->where('idtFase', $id)
+                  //      ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
+                    //    ->count()+1;
             $tmp = [
                 'nombre'=> $alumno -> nombre,
                 'apellido_parterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
-                'preguntas_respondidas_count' => $alumno->respuestas->count(),
-                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('max(idtPregunta) as ultima'))->where ('tusuario_id_creacion', $alumno->id)->where('idtFase', $id )->first(),
+                'preguntas_respondidas_count' => $alumno->respuestas->whereNotNull('fecha_actualizacion')->count(),
+                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
+                    ->where('tusuario_id_creacion', $alumno->id)
+                    ->where('idtFase', $id )
+                    ->orderBy('fecha_actualizacion', 'desc')
+                    ->first(),
 
             ];
             $alumnos_collection[] = $tmp;
         }
-        return response()->json($alumnos, 200);
+        return response()->json($alumnos_collection, 200);
+    }
+
+    public function obtenerCantidadPreguntas(ObtenerCantidadPreguntasRequest $request)
+    {
+        $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
+
+        return response()->json($cantidad, 200);
     }
 }

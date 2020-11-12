@@ -13,4 +13,9 @@ class Pregunta extends Model
 
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_actualizacion';
+
+    public function alternativas(){
+        return $this->hasMany(AlternativaPregunta::class, 'idtPregunta');
+    }
+
 }

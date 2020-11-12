@@ -106,7 +106,7 @@ class CursoController extends Controller
     public function listarHorarios(Request $request){
         $curso = Curso::where('codigo',$request->codCurso)->first();
 
-        return response()->json(HorarioResource::collection($curso->horarios()->where('idtSemestre', $request->idSemestre)->get()),201);
+        return response()->json(HorarioResource::collection($curso->horarios()->where('idtSemestre', $request->idSemestre)->where('estado', "ACT")->get()),201);
     }
 
 	//Lista los cursos que esta dictando de un docente
@@ -119,7 +119,7 @@ class CursoController extends Controller
             ->select('tCurso.codigo', 'tCurso.nombre', 'tHorario.horario', 'tSemestre.semestre')
             ->where('tUsuario.codigo', '=', $request->codigoUsuario)
             ->where('tSemestre.semestre', '=', $request->semestre)
-            ->where('tUsuario_tRol.idtRol', '=', 3)
+            ->whereIn('tUsuario_tRol.idtRol', [3, 4])
             ->where('tHorario.estado', '=', 'ACT')
             ->where('tCurso.estado', '=', 'ACT')
             ->orderBy('tCurso.codigo')

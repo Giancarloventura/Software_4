@@ -9,6 +9,8 @@ class Respuesta extends Model
 {
     use HasFactory;
 
+    public $incrementing = true;
+
     protected $table = 'tRespuesta';
 
     const CREATED_AT = 'fecha_creacion';
@@ -27,5 +29,8 @@ class Respuesta extends Model
     public function fase()
     {
         return $this->belongsTo(Fase::class, 'idtFase');
+    }
+    public function alternativas(){
+        return $this->belongsToMany(AlternativaPregunta::class, 'tRespuesta_tAlternativa', 'idtRespuesta', 'idtAlternativa');
     }
 }
