@@ -191,24 +191,27 @@ class FaseController extends Controller
         $alumnos_collection = [];
 
         foreach ($alumnos as $alumno){
-            $last_count = DB::table('tRespuesta')
-
-                        ->where('tusuario_id_creacion', $alumno->id)
-                        ->where('idtFase', $id)
-                        ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
-                        ->count()+1;
+            //$last_count = DB::table('tRespuesta')
+              //          ->where('tusuario_id_creacion', $alumno->id)
+                //        ->where('idtFase', $id)
+                  //      ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
+                    //    ->count()+1;
             $tmp = [
                 'nombre'=> $alumno -> nombre,
                 'apellido_parterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
-                'preguntas_respondidas_count' => $alumno->respuestas->count(),
-                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('max(idtPregunta) as ultima'))->where ('tusuario_id_creacion', $alumno->id)->where('idtFase', $id )->first(),
+                'preguntas_respondidas_count' => $alumno->respuestas->whereNotNull('fecha_actualizacion')->count(),
+                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
+                    ->where('tusuario_id_creacion', $alumno->id)
+                    ->where('idtFase', $id )
+                    ->orderBy('fecha_actualizacion', 'desc')
+                    ->first(),
 
             ];
             $alumnos_collection[] = $tmp;
         }
-        return response()->json($alumnos, 200);
+        return response()->json($alumnos_collection, 200);
     }
 
     public function obtenerCantidadPreguntas(ObtenerCantidadPreguntasRequest $request)

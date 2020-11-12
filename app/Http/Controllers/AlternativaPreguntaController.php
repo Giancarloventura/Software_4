@@ -49,7 +49,6 @@ class AlternativaPreguntaController extends Controller
         try{
 
             $alternativas = AlternativaPregunta::select('id')->where('idtPregunta',$idtPregunta)->get();
-            echo $alternativas;
             foreach($alternativas as $alt){
                 $alternativa = AlternativaPregunta::findOrFail($alt->id);
                 $alternativa->delete();

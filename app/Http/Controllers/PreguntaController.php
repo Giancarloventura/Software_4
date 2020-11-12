@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AlternativaPregunta;
 use App\Models\User;
+use App\Http\Resources\PreguntaResource;
+use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
+use App\Models\Fase;
 use App\Models\Pregunta;
 use App\Http\Controllers\AlternativaPreguntaController;
 
@@ -21,7 +24,6 @@ class PreguntaController extends Controller
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
             $pregunta->tipo = $request->tipo;
-
             if($request->tipo==0){
                 $pregunta->tipo_marcado = NULL;
                 $pregunta->nombre= $request->nombre;
@@ -60,6 +62,7 @@ class PreguntaController extends Controller
                 }
 
             }
+
             return response()->json($pregunta);
         }
         catch (Exception $exception)
@@ -87,7 +90,10 @@ class PreguntaController extends Controller
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
                 //Elimina alternativas existentes x idtPregunta:
-                app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
+                $alts = AlternativaPregunta::select('id')->where('idtPregunta',$pregunta->id)->get();
+                if($alts <> NULL){
+                    app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
+                }
 
                 //Agrega alternativas:
                 $alternativas = $request->alternativas;
@@ -114,6 +120,42 @@ class PreguntaController extends Controller
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
         }
     }
+
+    public function intercambiarOrden(Request $request)
+    {
+        try {
+            $pregunta1 = Pregunta::findOrFail($request->idtPregunta1);
+            $pregunta2 = Pregunta::findOrFail($request->idtPregunta2);
+
+            $aux = $pregunta1->posicion;
+            $pregunta1->posicion = $pregunta2->posicion;
+            $pregunta2->posicion = $aux;
+
+            $pregunta1->save();
+            $pregunta2->save();
+
+            return response()->json(['status' => 'success'], 200);
+        }
+        catch (Exception $exception)
+        {
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
+
+    }
+
+    public function listarPreguntasdeProfesor(Request $request){
+        $fase = Fase::findOrFail($request->idFase);
+        $evaluacion = $fase->evaluacion()->first();
+        $preguntas = $fase->preguntas()->get();
+        foreach($preguntas as $pregunta){
+            $alternativas = $pregunta->alternativas()->get();
+            $pregunta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
+        }
+
+        return response()->json(PreguntaResource::collection($preguntas), 200);
+    }
+
 
     public function eliminarPregunta(Request $request){
         //Eliminado Logico
