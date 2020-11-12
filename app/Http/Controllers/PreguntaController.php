@@ -80,8 +80,7 @@ class PreguntaController extends Controller
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
-            $pregunta->tipo = $request->tipo;
-            $pregunta->alternativas()->delete();
+
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
                 $pregunta->tipo_marcado = NULL;
@@ -91,7 +90,10 @@ class PreguntaController extends Controller
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
                 //Elimina alternativas existentes x idtPregunta:
-                app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
+                $alts = AlternativaPregunta::select('id')->where('idtPregunta',$pregunta->id)->get();
+                if($alts <> NULL){
+                    app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
+                }
 
                 //Agrega alternativas:
                 $alternativas = $request->alternativas;
