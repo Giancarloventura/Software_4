@@ -203,11 +203,11 @@ class FaseController extends Controller
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
                 'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
-                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
+                'ultima_pregunta' => Pregunta::find(DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
                     ->where('tusuario_id_creacion', $alumno->id)
                     ->where('idtFase', $id )
                     ->orderBy('fecha_actualizacion', 'desc')
-                    ->first(),
+                    ->first())->posicion,
 
             ];
             $alumnos_collection[] = $tmp;
