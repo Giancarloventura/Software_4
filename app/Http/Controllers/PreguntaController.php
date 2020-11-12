@@ -79,7 +79,8 @@ class PreguntaController extends Controller
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
-
+            $pregunta->tipo = $request->tipo;
+            $pregunta->alternativas()->delete();
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
                 $pregunta->tipo_marcado = NULL;
@@ -90,7 +91,7 @@ class PreguntaController extends Controller
                 $pregunta->save();
 
                 $alternativas = $request->alternativas;
-                $pregunta->alternativas()->delete();
+                
                 foreach($alternativas as $alternativa){
                     $alt = new AlternativaPregunta();
 
