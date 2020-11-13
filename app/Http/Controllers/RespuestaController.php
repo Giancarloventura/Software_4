@@ -38,7 +38,7 @@ class RespuestaController extends Controller
     public function listarPreguntasdeAlumno(Request $request){
         $fase = Fase::findOrFail($request->idFase);
         $evaluacion = $fase->evaluacion()->first();
-        $preguntas = $fase->preguntas()->get();
+        $preguntas = $fase->preguntas()->where('estado',"ACT")->get();
         $preguntas_respuestas = new Collection;
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();

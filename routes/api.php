@@ -103,7 +103,7 @@ Route::post('eliminar-pregunta', [PreguntaController::class, 'eliminarPregunta']
 Route::post('intercambiar-orden', [PreguntaController::class, 'intercambiarOrden']);
 
 Route::post('agregar-pregunta-x-fase', [FaseController::class, 'agregarPreguntaXFase']);
-Route::post('agregar-alternativa-pregunta', [AlternativaPregunta::class, 'agregarAlternativa']);
+Route::post('agregar-alternativa-pregunta', [AlternativaPreguntaController::class, 'agregarAlternativa']);
 
 Route::post('cursos-usuario', [CursoController::class, 'listarCursosXUsuario']);
 Route::post('evaluaciones-horario', [EvaluacionController::class, 'listarEvaluacionesXHorario']);
