@@ -50,14 +50,16 @@ class RespuestaController extends Controller
             else{
                 $respuesta = new Respuesta();
                 $respuesta->idtFase = $request->idFase;
-                echo $evaluacion;
                 $respuesta->idtEvaluacion = $evaluacion->id;
                 $respuesta->tusuario_id_creacion = $request->idUsuario;
                 $respuesta->tusuario_id_actualizacion = $request->idUsuario;
                 $respuesta->idtPregunta = $pregunta->id;
                 $respuesta->numero_intento = 0;
+                $respuesta->puntaje_obtenido - null;
                 $respuesta->comentario = $pregunta->comentario;
                 $respuesta->fecha_actualizacion = null;
+                $respuesta->estado = 0;
+                $respuesta->redaccion = null;
                 if($alternativas->count()>0){
                     $respuesta->es_marcada = 1;
                     $pregunta->opciones = $alternativas;
