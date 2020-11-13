@@ -213,21 +213,35 @@ class EvaluacionController extends Controller
                     ->where('idtUsuario', '=', $request->idtUsuario)
                     ->first();
 
+                if($estaCorregidoFase == null){
+                    $mi_fase=['nombre'=>$fase->nombre,
+                        'puntaje'=>null,
+                        'puntajeMax'=>$fase->puntaje,
+                        'estaCorregido'=>null];
+                }
 
-                if($estaCorregidoFase->esta_corregida==0) {
+                else if($estaCorregidoFase->esta_corregida==0 ) {
                     $boolEstaCorregidoFase=false;
                     $estaCorregidoEval = false;
+
+                    $mi_fase=['nombre'=>$fase->nombre,
+                        'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
+                        'puntajeMax'=>$fase->puntaje,
+                        'estaCorregido'=>$boolEstaCorregidoFase];
                 }
-                else{
+                else if($estaCorregidoFase->esta_corregida==1 ){
                     $boolEstaCorregidoFase=true;
+                    $mi_fase=['nombre'=>$fase->nombre,
+                        'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
+                        'puntajeMax'=>$fase->puntaje,
+                        'estaCorregido'=>$boolEstaCorregidoFase];
+
+                    $puntaje_tot_eval+=$puntaje_obtenido->puntaje_obtenido;
+
                 }
 
-                $mi_fase=['nombre'=>$fase->nombre,
-                    'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
-                    'puntajeMax'=>$fase->puntaje,
-                    'estaCorregido'=>$boolEstaCorregidoFase];
 
-                $puntaje_tot_eval+=$puntaje_obtenido->puntaje_obtenido;
+
                 array_push($arregloFase, $mi_fase);
             }
 
