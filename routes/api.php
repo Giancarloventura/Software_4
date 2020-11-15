@@ -49,6 +49,7 @@ Route::get('listar-semestres',[SemestreController::class, 'listarSemestres']);
 Route::post('crear-semestres',[SemestreController::class, 'crearSemestre']);
 Route::post('editar-semestres',[SemestreController::class, 'editarSemestre']);
 Route::post('eliminar-semestre',[SemestreController::class, 'eliminarSemestre']);
+Route::post('obtener-semestre',[SemestreController::class, 'obtenerSemestreXCodigo']);
 
 // RUTAS PARA LOS HORARIOS
 Route::post('insertar-horario', [HorarioController::class, 'insertarHorario']);
@@ -64,6 +65,9 @@ Route::post('rol-usuario-horario', [HorarioController::class, 'rolUsuario']);
 
 // RUTAS PARA LOS USUARIOS
 Route::post('crear-participante', [UsuarioController::class, 'crearParticipante']);
+
+Route::post('suspender-user', [UsuarioController::class, 'suspenderUsuario']);
+Route::post('activar-user', [UsuarioController::class, 'activarUsuario']);
 
 // RUTAS PARA LAS FASES
 Route::post('crear-fase', [FaseController::class, 'crearFase']);

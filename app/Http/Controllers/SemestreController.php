@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ObtenerSemestreXCodigoRequest;
 use Illuminate\Http\Request;
 use App\Models\Semestre;
 
@@ -88,5 +89,14 @@ class SemestreController extends Controller
         {
             echo 'Excepción capturada: ' . $e->getMessage() . '<br>';
         }
+    }
+
+    public function obtenerSemestreXCodigo(ObtenerSemestreXCodigoRequest $request)
+    {
+        $semestre = Semestre::select('tSemestre.semestre')
+            ->where('tSemestre.id', '=', $request->idSemestre)
+            ->get();
+
+        return response()->json($semestre[0], 200);
     }
 }
