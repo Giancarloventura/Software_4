@@ -49,6 +49,7 @@ Route::get('listar-semestres',[SemestreController::class, 'listarSemestres']);
 Route::post('crear-semestres',[SemestreController::class, 'crearSemestre']);
 Route::post('editar-semestres',[SemestreController::class, 'editarSemestre']);
 Route::post('eliminar-semestre',[SemestreController::class, 'eliminarSemestre']);
+Route::post('obtener-semestre',[SemestreController::class, 'obtenerSemestreXCodigo']);
 
 // RUTAS PARA LOS HORARIOS
 Route::post('insertar-horario', [HorarioController::class, 'insertarHorario']);
@@ -103,7 +104,7 @@ Route::post('eliminar-pregunta', [PreguntaController::class, 'eliminarPregunta']
 Route::post('intercambiar-orden', [PreguntaController::class, 'intercambiarOrden']);
 
 Route::post('agregar-pregunta-x-fase', [FaseController::class, 'agregarPreguntaXFase']);
-Route::post('agregar-alternativa-pregunta', [AlternativaPregunta::class, 'agregarAlternativa']);
+Route::post('agregar-alternativa-pregunta', [AlternativaPreguntaController::class, 'agregarAlternativa']);
 
 Route::post('cursos-usuario', [CursoController::class, 'listarCursosXUsuario']);
 Route::post('evaluaciones-horario', [EvaluacionController::class, 'listarEvaluacionesXHorario']);
@@ -134,7 +135,7 @@ Route::post('comentario-alumno', [RespuestaController::class, 'agregarComentario
 Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
 
-Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
+
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
 
