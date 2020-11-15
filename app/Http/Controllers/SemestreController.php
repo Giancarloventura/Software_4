@@ -13,7 +13,7 @@ class SemestreController extends Controller
     {
         $diaActual = date("Y-m-d H:i:s");
 
-        $semestreActual = Semestre::where('tSemestre.fecha_inicio', '<=', $diaActual)
+        $semestreActual = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('tSemestre.fecha_inicio', '<=', $diaActual)
             ->where('tSemestre.fecha_fin', '>=', $diaActual)->first();
 
         return response()->json($semestreActual, 200);
