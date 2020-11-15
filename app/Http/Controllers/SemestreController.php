@@ -21,7 +21,15 @@ class SemestreController extends Controller
     {
         try
         {
-            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin')->orderBy('semestre','DESC')->get();
+            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', 'estado')->orderBy('semestre','DESC')->get();
+            foreach($semestres as $semestre){
+                if($semestre->estado == "ACT"){
+                    $semestre->estado = 1;
+                }
+                else{
+                    $semestre->estado = 0;
+                }
+            }
             return response()->json($semestres, 200);
         }
         catch(Exception $e)
