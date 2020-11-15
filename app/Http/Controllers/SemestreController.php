@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ObtenerSemestreXCodigoRequest;
 use Illuminate\Http\Request;
 use App\Models\Semestre;
+use Illuminate\Support\Facades\DB;
 
 class SemestreController extends Controller
 {
@@ -22,15 +23,7 @@ class SemestreController extends Controller
     {
         try
         {
-            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', 'estado')->orderBy('semestre','DESC')->get();
-            foreach($semestres as $semestre){
-                if($semestre->estado == "ACT"){
-                    $semestre->estado = 1;
-                }
-                else{
-                    $semestre->estado = 0;
-                }
-            }
+            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', DB::raw('now()<=fecha_fin && now()>=fecha_inicio as activo'))->orderBy('semestre','DESC')->get();
             return response()->json($semestres, 200);
         }
         catch(Exception $e)
