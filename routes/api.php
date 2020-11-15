@@ -49,6 +49,7 @@ Route::get('listar-semestres',[SemestreController::class, 'listarSemestres']);
 Route::post('crear-semestres',[SemestreController::class, 'crearSemestre']);
 Route::post('editar-semestres',[SemestreController::class, 'editarSemestre']);
 Route::post('eliminar-semestre',[SemestreController::class, 'eliminarSemestre']);
+Route::post('obtener-semestre',[SemestreController::class, 'obtenerSemestreXCodigo']);
 
 // RUTAS PARA LOS HORARIOS
 Route::post('insertar-horario', [HorarioController::class, 'insertarHorario']);
