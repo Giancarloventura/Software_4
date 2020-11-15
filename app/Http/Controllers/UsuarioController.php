@@ -49,11 +49,12 @@ class UsuarioController extends Controller
     }
 
     public function login(Request $request){
-        $user = User::where('email',$request->email)->first();
+        $user = User::where('email',$request->email)->where('estado','ACT')->first();
+
         if(!isset($user)){
             return response('No se ha encontrado al usuario', 404);
         }
-        
+
         $roles = $user->roles()->groupBy('idtRol')->get();
         $user->esAdmin = 0;
         $user->esAlumno = 0;
@@ -97,6 +98,32 @@ class UsuarioController extends Controller
             $semestres->push($aux);
         }
         return response()->json($semestres,200);
+    }
+
+    public function suspenderUsuario(Request $request){
+        try{
+            $user = User::findOrFail($request->id);
+            $user->estado = 'INA'; //cond login
+            $user->save();
+            return response()->json(['status' => 'success'], 200);
+        }
+        catch(Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
+    }
+
+    public function activarUsuario(Request $request){
+        try{
+            $user = User::findOrFail($request->id);
+            $user->estado = 'ACT';
+            $user->save();
+            return response()->json(['status' => 'success'], 200);
+        }
+        catch(Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
     }
 
 }
