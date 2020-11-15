@@ -145,7 +145,7 @@ class PreguntaController extends Controller
     public function listarPreguntasdeProfesor(Request $request){
         $fase = Fase::findOrFail($request->idFase);
         $evaluacion = $fase->evaluacion()->first();
-        $preguntas = $fase->preguntas()->get();
+        $preguntas = $fase->preguntas()->where('estado',"ACT")->get();
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();
             $pregunta->opciones = AlternativaResource::collection($alternativas);
