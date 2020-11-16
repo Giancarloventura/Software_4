@@ -86,10 +86,9 @@ class SemestreController extends Controller
 
     public function obtenerSemestreXCodigo(ObtenerSemestreXCodigoRequest $request)
     {
-        $semestre = Semestre::select('tSemestre.semestre')
-            ->where('tSemestre.id', '=', $request->idSemestre)
-            ->get();
+        $semestre = Semestre::where('tSemestre.semestre', '=', $request->semestre)
+            ->first();
 
-        return response()->json($semestre[0], 200);
+        return response()->json($semestre, 200);
     }
 }

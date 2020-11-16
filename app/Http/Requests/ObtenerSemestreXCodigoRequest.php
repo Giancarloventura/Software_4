@@ -16,7 +16,7 @@ class ObtenerSemestreXCodigoRequest extends FormRequest
     public function rules()
     {
         return [
-            'idSemestre' => ['required']
+            'semestre' => ['required']
         ];
     }
 }
