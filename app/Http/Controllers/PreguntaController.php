@@ -145,7 +145,7 @@ class PreguntaController extends Controller
     public function listarPreguntasdeProfesor(Request $request){
         $fase = Fase::findOrFail($request->idFase);
         $evaluacion = $fase->evaluacion()->first();
-        $preguntas = $fase->preguntas()->where('estado',"ACT")->get();
+        $preguntas = $fase->preguntas()->where('estado',"ACT")->orderBy('posicion', 'asc')->get();
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();
             $pregunta->opciones = AlternativaResource::collection($alternativas);
@@ -162,6 +162,11 @@ class PreguntaController extends Controller
             $pregunta = Pregunta::findOrFail($request->id);
             $pregunta->estado = 'INA';
             $pregunta->save();
+            $preguntas_posteriores = Fase::findOrFail($request->idFase)->preguntas()->where('posicion','>', $pregunta->posicion)->where('estado', "ACT")->get();
+            foreach($preguntas_posteriores as $pregunta_posterior){
+                $pregunta_posterior->posicion = $pregunta_posterior->posicion-1;
+                $pregunta_posterior->save();
+            }
             return response()->json(['status' => 'success'], 200);
         }catch (Exception $exception){
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
