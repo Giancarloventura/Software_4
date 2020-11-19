@@ -214,6 +214,7 @@ class EvaluacionController extends Controller
                     ->first();
 
                 if($estaCorregidoFase == null){
+                    $estaCorregidoEval = false;
                     $mi_fase=['nombre'=>$fase->nombre,
                         'puntaje'=>null,
                         'puntajeMax'=>$fase->puntaje,
