@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ObtenerSemestreXCodigoRequest;
 use Illuminate\Http\Request;
 use App\Models\Semestre;
+use Illuminate\Support\Facades\DB;
 
 class SemestreController extends Controller
 {
@@ -12,7 +13,7 @@ class SemestreController extends Controller
     {
         $diaActual = date("Y-m-d H:i:s");
 
-        $semestreActual = Semestre::where('tSemestre.fecha_inicio', '<=', $diaActual)
+        $semestreActual = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('tSemestre.fecha_inicio', '<=', $diaActual)
             ->where('tSemestre.fecha_fin', '>=', $diaActual)->first();
 
         return response()->json($semestreActual, 200);
@@ -22,7 +23,7 @@ class SemestreController extends Controller
     {
         try
         {
-            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin')->orderBy('semestre','DESC')->get();
+            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', DB::raw('now()<=fecha_fin && now()>=fecha_inicio as activo'))->orderBy('semestre','DESC')->get();
             return response()->json($semestres, 200);
         }
         catch(Exception $e)
@@ -85,10 +86,9 @@ class SemestreController extends Controller
 
     public function obtenerSemestreXCodigo(ObtenerSemestreXCodigoRequest $request)
     {
-        $semestre = Semestre::select('tSemestre.semestre')
-            ->where('tSemestre.id', '=', $request->idSemestre)
-            ->get();
+        $semestre = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('tSemestre.semestre', '=', $request->semestre)
+            ->first();
 
-        return response()->json($semestre[0], 200);
+        return response()->json($semestre, 200);
     }
 }
