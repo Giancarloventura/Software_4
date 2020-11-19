@@ -225,7 +225,7 @@ class EvaluacionController extends Controller
                     $estaCorregidoEval = false;
 
                     $mi_fase=['nombre'=>$fase->nombre,
-                        'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
+                        'puntaje'=>null,
                         'puntajeMax'=>$fase->puntaje,
                         'estaCorregido'=>$boolEstaCorregidoFase];
                 }
