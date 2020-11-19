@@ -68,6 +68,7 @@ Route::post('crear-participante', [UsuarioController::class, 'crearParticipante'
 
 Route::post('suspender-user', [UsuarioController::class, 'suspenderUsuario']);
 Route::post('activar-user', [UsuarioController::class, 'activarUsuario']);
+Route::get('listar-usuarios', [UsuarioController::class, 'listarUsuarios']);
 
 // RUTAS PARA LAS FASES
 Route::post('crear-fase', [FaseController::class, 'crearFase']);

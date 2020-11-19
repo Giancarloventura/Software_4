@@ -126,4 +126,27 @@ class UsuarioController extends Controller
         }
     }
 
+    public function listarUsuarios(Request $request){
+        try
+        {
+            $cadena = $request->cadena;
+            if($cadena == NULL || $cadena ==''){
+                $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->get();
+                return response()->json($usuarios, 200);
+            } else {
+                if(is_numeric($cadena)){
+                    $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('codigo',$cadena)->get();
+                    return response()->json($usuarios, 200);
+                } else {
+                    $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('nombre',$cadena)->get();
+                    return response()->json($usuarios, 200);
+                }
+            }
+        }
+        catch (Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
+    }
+
 }
