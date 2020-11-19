@@ -245,12 +245,22 @@ class EvaluacionController extends Controller
                 array_push($arregloFase, $mi_fase);
             }
 
-            $mi_eval=['nombre'=>$evaluacion->nombre,
+            if($estaCorregidoEval){
+                $mi_eval=['nombre'=>$evaluacion->nombre,
                 'puntaje'=>$puntaje_tot_eval,
                 'puntajeMax'=>$evaluacion->puntaje,
                 'listaFases'=>$arregloFase,
                 'estaCorregido'=>$estaCorregidoEval,
                 'idEvaluacion'=>$evaluacion->id];
+            }
+            else{
+                $mi_eval=['nombre'=>$evaluacion->nombre,
+                'puntaje'=>null,
+                'puntajeMax'=>$evaluacion->puntaje,
+                'listaFases'=>$arregloFase,
+                'estaCorregido'=>$estaCorregidoEval,
+                'idEvaluacion'=>$evaluacion->id];
+            }
 
             array_push($arregloEval, $mi_eval);
 
