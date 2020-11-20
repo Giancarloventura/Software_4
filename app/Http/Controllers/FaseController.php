@@ -159,6 +159,7 @@ class FaseController extends Controller
             ->where('tHorario.estado', '=', 'ACT')
             ->where('tCurso.estado', '=', 'ACT')
             ->orderBy('tFase.fecha_inicio')
+            ->orderBy('tFase.hora_inicio')
             ->get();
 
         return response()->json($evaluacion, 200);
