@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             //$table->rememberToken();
             //$table->foreignId('current_team_id')->nullable();
             //$table->text('profile_photo_path')->nullable();
+            $table->string('estado',3)->default('ACT');
             $table->timestamp('fecha_creacion')->nullable();
             $table->timestamp('fecha_actualizacion')->nullable();
             $table->foreignId('tusuario_id_creacion')->nullable()->constrained('tUsuario');

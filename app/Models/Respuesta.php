@@ -31,6 +31,6 @@ class Respuesta extends Model
         return $this->belongsTo(Fase::class, 'idtFase');
     }
     public function alternativas(){
-        return $this->belongsToMany(AlternativaPregunta::class, 'tRespuesta_tAlternativa', 'idtRespuesta', 'idtAlternativa');
+        return $this->belongsToMany(AlternativaPregunta::class, 'tRespuesta_tAlternativa_Pregunta', 'idtRespuesta', 'idtAlternativa');
     }
 }

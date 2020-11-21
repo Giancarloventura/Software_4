@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 #namespace App\Models;
 
+use App\Http\Requests\CrearComentarioRequest;
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
+use App\Http\Requests\ListarComentarioXAlumnoRequest;
 use App\Http\Requests\ObtenerCantidadPreguntasRequest;
+use App\Models\Comentario;
+use App\Models\Evaluacion;
 use App\Models\FasePregunta;
 use App\Models\Pregunta;
+use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use App\Models\Horario;
+use App\Models\Respuesta;
 use App\Models\Fase;
 use App\Models\User;
 use App\Http\Requests\CrearFaseRequest;
@@ -102,8 +108,9 @@ class FaseController extends Controller
             $fasePregunta = new FasePregunta();
 
             //Preguntas:
-            $pregunta->id = $request->idPregunta;
+            //$pregunta->id = $request->idPregunta;
             $pregunta->tipo = $request->tipo;
+            $pregunta->estado = 'ACT';
             if($pregunta->tipo==0){
                 $pregunta->tipo_marcado = NULL;
             } else{
@@ -157,6 +164,7 @@ class FaseController extends Controller
             ->where('tHorario.estado', '=', 'ACT')
             ->where('tCurso.estado', '=', 'ACT')
             ->orderBy('tFase.fecha_inicio')
+            ->orderBy('tFase.hora_inicio')
             ->get();
 
         return response()->json($evaluacion, 200);
@@ -183,10 +191,7 @@ class FaseController extends Controller
     public function getSeguimiento($id)
     {
 
-        $alumnos  = User::with(['respuestas' => function($query) use ($id){
-            $query->where('idtFase', $id);
-
-        } ])->whereHas('respuestas')->get();
+        $alumnos  = Fase::find($id)->evaluacion()->first()->horario()->first()->usuarios()->wherePivot('idtRol',5)->get();
 
         $alumnos_collection = [];
 
@@ -196,17 +201,21 @@ class FaseController extends Controller
                 //        ->where('idtFase', $id)
                   //      ->where('idtPregunta','<',$alumno->respuestas->sortByDesc('fecha_creacion')->first()->idtPregunta)
                     //    ->count()+1;
+            $respuesta = Respuesta::where('tusuario_id_creacion', $alumno->id)->where('idtFase', $id)->orderBy('fecha_actualizacion', 'desc')->first();
+            if($respuesta == null){
+                $ultima = 0;
+            }
+            else{
+                $pregunta = Pregunta::find($respuesta->idtPregunta);
+                $ultima = $pregunta->posicion;
+            }
             $tmp = [
                 'nombre'=> $alumno -> nombre,
                 'apellido_parterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
-                'preguntas_respondidas_count' => $alumno->respuestas->whereNotNull('fecha_actualizacion')->count(),
-                'ultima_pregunta' => DB::table('tRespuesta')->select(DB::raw('(idtPregunta) as ultima'))
-                    ->where('tusuario_id_creacion', $alumno->id)
-                    ->where('idtFase', $id )
-                    ->orderBy('fecha_actualizacion', 'desc')
-                    ->first(),
+                'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
+                'ultima_pregunta' => $ultima,
 
             ];
             $alumnos_collection[] = $tmp;
@@ -219,5 +228,90 @@ class FaseController extends Controller
         $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
 
         return response()->json($cantidad, 200);
+    }
+
+    //Crea un comentario hecho por un alumno para una fase
+    public function crearComentario(CrearComentarioRequest $request)
+    {
+        $comentario = new Comentario();
+
+        $comentario->idtUsuario = $request->idUsuario;
+        $comentario->idtFase = $request->idFase;
+        $comentario->contenido = $request->comentario;
+        $comentario->tusuario_id_creacion = $request->idAutor;
+        $comentario->save();
+
+        return response()->json('Comentario creado exitosamente', 200);
+    }
+
+    //Listar los comentarios de un alumno en una fase
+    public function listarComentarioXAlumno(ListarComentarioXAlumnoRequest $request)
+    {
+        $comentarios = Comentario::where('tComentario.idtFase', '=', $request->idFase)
+            ->where('tComentario.idtUsuario', '=', $request->idUsuario)
+            ->orderBy('tComentario.fecha_creacion')
+            ->get();
+
+        $fase = Fase::where('tFase.id', '=', $request->idFase)->first();
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $fase->idtEvaluacion)->first();
+
+        $collection = [];
+
+        foreach($comentarios as $comentario)
+        {
+            $alumno = User::findOrFail($comentario->tusuario_id_creacion);
+            $rol = UsuarioRol::where('tUsuario_tRol.idtUsuario', '=', $comentario->tusuario_id_creacion)
+                ->where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->first();
+
+            if($rol->idtRol == 3){
+                $esProfesor = 'true';
+                $esJp = 'false';
+                $esAlumno = 'false';
+            }
+            else
+            {
+                if($rol->idtRol == 4){
+                    $esProfesor = 'false';
+                    $esJp = 'true';
+                    $esAlumno = 'false';
+                }
+                else
+                {
+                    if($rol->idtRol == 5){
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'true';
+                    }
+                    else{
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'false';
+                    }
+                }
+            }
+
+            $autor = [
+                'id'=> $comentario->tusuario_id_creacion,
+                'nombre' => $alumno->nombre,
+                'apellido_paterno'=> $alumno->apellido_paterno,
+                'apellido_materno'=> $alumno->apellido_materno,
+                'esAlumno'=> $esAlumno,
+                'esJL'=> $esJp,
+                'esProfesor'=> $esProfesor
+            ];
+
+            $tmp= [
+                'id'=> $comentario->id,
+                'idAlumno'=> $comentario->idtUsuario,
+                'idFase'=> $comentario->idtFase,
+                'comentario'=> $comentario->contenido,
+                'fecha_creacion'=> $comentario->fecha_creacion,
+                'autor'=> $autor
+            ];
+
+            $collection[]= $tmp;
+        }
+
+        return response()->json($collection, 200);
     }
 }

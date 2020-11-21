@@ -9,6 +9,7 @@ use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Fase;
 use App\Models\Pregunta;
+use App\Http\Controllers\AlternativaPreguntaController;
 
 class PreguntaController extends Controller
 {
@@ -17,7 +18,7 @@ class PreguntaController extends Controller
         try
         {
             $pregunta = new Pregunta();
-            $pregunta->id = $request->id;
+            //$pregunta->id = $request->id;
 
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
@@ -30,7 +31,6 @@ class PreguntaController extends Controller
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
                 $pregunta->fecha_actualizacion = NULL;
-
                 $pregunta->save();
             } else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
@@ -39,7 +39,6 @@ class PreguntaController extends Controller
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
                 $pregunta->fecha_actualizacion = NULL;
-
                 $pregunta->save();
 
                 $alternativas = $request->alternativas;
@@ -79,8 +78,8 @@ class PreguntaController extends Controller
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
-            $pregunta->tipo = $request->tipo;
-            $pregunta->alternativas()->delete();
+            $pregunta->comentario = $request->feedback;
+
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
                 $pregunta->tipo_marcado = NULL;
@@ -89,7 +88,13 @@ class PreguntaController extends Controller
                 $pregunta->nombre = NULL;
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
+                //Elimina alternativas existentes x idtPregunta:
+                $alts = AlternativaPregunta::select('id')->where('idtPregunta',$pregunta->id)->get();
+                if($alts <> NULL){
+                    app(AlternativaPreguntaController::class)->eliminarAlternativa($pregunta->id);
+                }
 
+                //Agrega alternativas:
                 $alternativas = $request->alternativas;
 
                 foreach($alternativas as $alternativa){
@@ -140,7 +145,7 @@ class PreguntaController extends Controller
     public function listarPreguntasdeProfesor(Request $request){
         $fase = Fase::findOrFail($request->idFase);
         $evaluacion = $fase->evaluacion()->first();
-        $preguntas = $fase->preguntas()->get();
+        $preguntas = $fase->preguntas()->where('estado',"ACT")->orderBy('posicion', 'asc')->get();
         foreach($preguntas as $pregunta){
             $alternativas = $pregunta->alternativas()->get();
             $pregunta->opciones = AlternativaResource::collection($alternativas);
@@ -150,4 +155,21 @@ class PreguntaController extends Controller
         return response()->json(PreguntaResource::collection($preguntas), 200);
     }
 
+
+    public function eliminarPregunta(Request $request){
+        //Eliminado Logico
+        try{
+            $pregunta = Pregunta::findOrFail($request->id);
+            $pregunta->estado = 'INA';
+            $pregunta->save();
+            $preguntas_posteriores = Fase::findOrFail($request->idFase)->preguntas()->where('posicion','>', $pregunta->posicion)->where('estado', "ACT")->get();
+            foreach($preguntas_posteriores as $pregunta_posterior){
+                $pregunta_posterior->posicion = $pregunta_posterior->posicion-1;
+                $pregunta_posterior->save();
+            }
+            return response()->json(['status' => 'success'], 200);
+        }catch (Exception $exception){
+            echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
+    }
 }

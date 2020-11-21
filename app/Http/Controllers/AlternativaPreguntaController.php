@@ -25,7 +25,7 @@ class AlternativaPreguntaController extends Controller
 
             $alternativa = new AlternativaPregunta();
 
-            $alternativa->id = $request->id;
+            //$alternativa->id = $request->id;
             $alternativa->enunciado = $request->enunciado;
             $alternativa->ruta_archivo = $request->ruta_archivo;
             $alternativa->es_imagen = $request->es_imagen;
@@ -42,6 +42,22 @@ class AlternativaPreguntaController extends Controller
         catch(Exception $exception)
         {
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
+        }
+    }
+
+    public function eliminarAlternativa(int $idtPregunta){
+        try{
+
+            $alternativas = AlternativaPregunta::select('id')->where('idtPregunta',$idtPregunta)->get();
+            foreach($alternativas as $alt){
+                $alternativa = AlternativaPregunta::findOrFail($alt->id);
+                $alternativa->delete();
+            }
+            //$alternativas->delete();
+            return response()->json(['status' => 'success'], 200);
+
+        }catch (Exception $e){
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
         }
     }
 }
