@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 #namespace App\Models;
 
+use App\Http\Requests\CrearComentarioRequest;
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
+use App\Http\Requests\ListarComentarioXAlumnoRequest;
 use App\Http\Requests\ObtenerCantidadPreguntasRequest;
+use App\Models\Comentario;
 use App\Models\FasePregunta;
 use App\Models\Pregunta;
 use Illuminate\Http\Request;
@@ -223,5 +226,51 @@ class FaseController extends Controller
         $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
 
         return response()->json($cantidad, 200);
+    }
+
+    //Crea un comentario hecho por un alumno para una fase
+    public function crearComentario(CrearComentarioRequest $request)
+    {
+        $comentario = new Comentario();
+
+        $comentario->idtUsuario = $request->idUsuario;
+        $comentario->idtFase = $request->idFase;
+        $comentario->contenido = $request->comentario;
+        $comentario->tusuario_id_creacion = $request->idAutor;
+        $comentario->save();
+
+        return response()->json('Comentario creado exitosamente', 200);
+    }
+
+    //Listar los comentarios de un alumno en una fase
+    public function listarComentarioXAlumno(ListarComentarioXAlumnoRequest $request)
+    {
+        $comentarios = Comentario::where('tComentario.idtFase', '=', $request->idFase)
+            ->where('tComentario.idtUsuario', '=', $request->idUsuario)
+            ->orderBy('tComentario.fecha_creacion')
+            ->get();
+
+        $collection = [];
+
+        foreach($comentarios as $comentario)
+        {
+            $alumno = User::findOrFail($comentario->tusuario_id_creacion);
+
+            $tmp= [
+                'id'=> $comentario->id,
+                'idAlumno'=> $comentario->idtUsuario,
+                'idFase'=> $comentario->idtFase,
+                'comentario'=> $comentario->contenido,
+                'fecha creacion'=> $comentario->fecha_creacion,
+                'idAutor'=> $comentario->tusuario_id_creacion,
+                'nombre autor' => $alumno->nombre,
+                'apellido paterno autor'=> $alumno->apellido_paterno,
+                'apellido materno autor'=> $alumno->apellido_materno
+            ];
+
+            $collection[]= $tmp;
+        }
+
+        return response()->json($collection, 200);
     }
 }
