@@ -87,7 +87,8 @@ class EvaluacionController extends Controller
         return response()->json([
             'nombreEvaluacion'=>$evaluacion->nombre,
             'fases'=>FaseResource::collection($fases),
-            'fechaServer'=> date("Y-m-d H:i:s")
+            'fechaServer'=> date("Y-m-d"),
+            'horaServer' => date("H:i:s")
         ], 200);
     }
 
