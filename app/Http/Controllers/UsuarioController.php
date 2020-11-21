@@ -17,6 +17,7 @@ use Illuminate\Support\Collection;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\HorarioResource;
 use App\Http\Resources\UnidadAcademicaResource;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioController extends Controller
 {
@@ -202,13 +203,14 @@ class UsuarioController extends Controller
     public function listarHistoricoCursosProfesorJL(ListarHistoricoRequest $request)
     {
         //Consigo todos los semestres existentes en la base de datos
-        $semestres = Semestre::all();
+        $semestres = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->get();
 
         //Arreglo a devolver
         $collection = [];
 
         foreach($semestres as $semestre)
         {
+
             //Consigo todos los horarios del semestre a analizar
             $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
 
@@ -236,6 +238,7 @@ class UsuarioController extends Controller
 
             $temp = [
                 'semestre'=> $semestre->semestre,
+                'activo' => $semestre->activo,
                 'cursos'=> $participando
             ];
 
