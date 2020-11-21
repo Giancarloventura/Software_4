@@ -290,19 +290,23 @@ class FaseController extends Controller
                 }
             }
 
+            $autor = [
+                'id'=> $comentario->tusuario_id_creacion,
+                'nombre' => $alumno->nombre,
+                'apellido_paterno'=> $alumno->apellido_paterno,
+                'apellido_materno'=> $alumno->apellido_materno,
+                'esAlumno'=> $esAlumno,
+                'esJL'=> $esJp,
+                'esProfesor'=> $esProfesor
+            ];
+
             $tmp= [
                 'id'=> $comentario->id,
                 'idAlumno'=> $comentario->idtUsuario,
                 'idFase'=> $comentario->idtFase,
                 'comentario'=> $comentario->contenido,
-                'fecha creacion'=> $comentario->fecha_creacion,
-                'idAutor'=> $comentario->tusuario_id_creacion,
-                'nombre autor' => $alumno->nombre,
-                'apellido paterno autor'=> $alumno->apellido_paterno,
-                'apellido materno autor'=> $alumno->apellido_materno,
-                'esAlumno autor'=> $esAlumno,
-                'esJL autor'=> $esJp,
-                'esProfesor autor'=> $esProfesor
+                'fecha_creacion'=> $comentario->fecha_creacion,
+                'autor'=> $autor
             ];
 
             $collection[]= $tmp;
