@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ListarHistoricoRequest;
+use App\Models\Curso;
+use App\Models\Horario;
+use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use App\Http\Requests\ParticipanteRequest;
 use App\Models\User;
@@ -149,4 +153,95 @@ class UsuarioController extends Controller
         }
     }
 
+    public function listarHistoricoCursosAlumno(ListarHistoricoRequest $request)
+    {
+        //Consigo todos los semestres existentes en la base de datos
+        $semestres = Semestre::all();
+
+        //Arreglo a devolver
+        $collection = [];
+
+        foreach($semestres as $semestre)
+        {
+            //Consigo todos los horarios del semestre a analizar
+            $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
+
+            //Horarios donde participo el alumno
+            $participando = [];
+            foreach($horarios as $horario)
+            {
+                $alumno = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $horario->id)
+                    ->where('tUsuario_tRol.idtUsuario', '=', $request->idUsuario)
+                    ->where('tUsuario_tRol.idtRol', '=', 5)
+                    ->first();
+
+                if($alumno != null)
+                {
+                    $curso = Curso::where('tCurso.id', '=', $horario->idtCurso)->first();
+                    $tmp = [
+                        'codigo_curso'=> $curso->codigo,
+                        'nombre_curso'=> $curso->nombre,
+                        'horario'=> $horario->horario
+                    ];
+
+                    $participando[] = $tmp;
+                }
+            }
+
+            $temp = [
+                'semestre'=> $semestre->semestre,
+                'cursos'=> $participando
+            ];
+
+            $collection[] = $temp;
+        }
+
+        return response()->json($collection, 200);
+    }
+
+    public function listarHistoricoCursosProfesorJL(ListarHistoricoRequest $request)
+    {
+        //Consigo todos los semestres existentes en la base de datos
+        $semestres = Semestre::all();
+
+        //Arreglo a devolver
+        $collection = [];
+
+        foreach($semestres as $semestre)
+        {
+            //Consigo todos los horarios del semestre a analizar
+            $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
+
+            //Horarios donde participo el alumno
+            $participando = [];
+            foreach($horarios as $horario)
+            {
+                $alumno = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $horario->id)
+                    ->where('tUsuario_tRol.idtUsuario', '=', $request->idUsuario)
+                    ->whereBetween('tUsuario_tRol.idtRol', [3,4])
+                    ->first();
+
+                if($alumno != null)
+                {
+                    $curso = Curso::where('tCurso.id', '=', $horario->idtCurso)->first();
+                    $tmp = [
+                        'codigo_curso'=> $curso->codigo,
+                        'nombre_curso'=> $curso->nombre,
+                        'horario'=> $horario->horario
+                    ];
+
+                    $participando[] = $tmp;
+                }
+            }
+
+            $temp = [
+                'semestre'=> $semestre->semestre,
+                'cursos'=> $participando
+            ];
+
+            $collection[] = $temp;
+        }
+
+        return response()->json($collection, 200);
+    }
 }
