@@ -322,13 +322,13 @@ class FaseController extends Controller
         {
             $fase = Fase::select('idtEvaluacion', 'preguntas_mostradas')
                     ->from('tFase')
-                    ->where('id', $request->idtFase)->first();
+                    ->where('id', $request->idFase)->first();
             $preguntas = Pregunta::select('p.id as idtPregunta',
                         'p.tipo as tipo',
                         'p.tipo_marcado as tipo_marcado')
                         ->from('tPregunta as p')
                         ->join('tFase_tPregunta as x', 'x.idtPregunta', '=', 'p.id')
-                        ->where('x.idtFase', $request->idtFase)
+                        ->where('x.idtFase', $request->idFase)
                         ->inRandomOrder()
                         ->limit($fase->preguntas_mostradas)
                         ->get();
@@ -340,10 +340,10 @@ class FaseController extends Controller
                 $respuesta = new Respuesta();
                 $respuesta->idtPregunta = $pregunta->idtPregunta;
                 $respuesta->idtEvaluacion = $fase->idtEvaluacion;
-                $respuesta->idtFase = $request->idtFase;
+                $respuesta->idtFase = $request->idFase;
                 $respuesta->estado = 0;
                 $respuesta->es_marcada = $pregunta->tipo;
-                $respuesta->tusuario_id_creacion = $request->idtUsuario;
+                $respuesta->tusuario_id_creacion = $request->idUsuario;
                 $respuesta->fecha_actualizacion = NULL;
 
                 $respuesta->save();
