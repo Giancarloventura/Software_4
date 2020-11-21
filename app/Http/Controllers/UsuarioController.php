@@ -157,7 +157,7 @@ class UsuarioController extends Controller
     public function listarHistoricoCursosAlumno(ListarHistoricoRequest $request)
     {
         //Consigo todos los semestres existentes en la base de datos
-        $semestres = Semestre::all();
+        $semestres = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->get();
 
         //Arreglo a devolver
         $collection = [];
