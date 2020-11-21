@@ -212,7 +212,7 @@ class FaseController extends Controller
             }
             $tmp = [
                 'nombre'=> $alumno -> nombre,
-                'apellido_parterno'=> $alumno->apellido_paterno,
+                'apellido_paterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
                 'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
