@@ -13,6 +13,7 @@ use App\Models\Evaluacion;
 use App\Models\FasePregunta;
 use App\Models\Pregunta;
 use App\Models\UsuarioRol;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Respuesta;
@@ -313,5 +314,46 @@ class FaseController extends Controller
         }
 
         return response()->json($collection, 200);
+    }
+
+    public function crearPreguntasAleatorias (Request $request)
+    {
+        try
+        {
+            $fase = Fase::select('idtEvaluacion', 'preguntas_mostradas')
+                    ->from('tFase')
+                    ->where('id', $request->idtFase)->first();
+            $preguntas = Pregunta::select('p.id as idtPregunta',
+                        'p.tipo as tipo',
+                        'p.tipo_marcado as tipo_marcado')
+                        ->from('tPregunta as p')
+                        ->join('tFase_tPregunta as x', 'x.idtPregunta', '=', 'p.id')
+                        ->where('x.idtFase', $request->idtFase)
+                        ->inRandomOrder()
+                        ->limit($fase->preguntas_mostradas)
+                        ->get();
+
+            if (is_null($preguntas)) return response()->json([],204);
+
+            foreach ($preguntas as $pregunta)
+            {
+                $respuesta = new Respuesta();
+                $respuesta->idtPregunta = $pregunta->idtPregunta;
+                $respuesta->idtEvaluacion = $fase->idtEvaluacion;
+                $respuesta->idtFase = $request->idtFase;
+                $respuesta->estado = 0;
+                $respuesta->es_marcada = $pregunta->tipo;
+                $respuesta->tusuario_id_creacion = $request->idtUsuario;
+                $respuesta->fecha_actualizacion = NULL;
+
+                $respuesta->save();
+            }
+
+            return response()->json(['status' => 'success'], 201);
+        }
+        catch (Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
     }
 }
