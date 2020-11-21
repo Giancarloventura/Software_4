@@ -69,6 +69,8 @@ Route::post('crear-participante', [UsuarioController::class, 'crearParticipante'
 Route::post('suspender-user', [UsuarioController::class, 'suspenderUsuario']);
 Route::post('activar-user', [UsuarioController::class, 'activarUsuario']);
 Route::get('listar-usuarios', [UsuarioController::class, 'listarUsuarios']);
+Route::post('historico-cursos-alumno', [UsuarioController::class, 'listarHistoricoCursosAlumno']);
+Route::post('historico-cursos-profesorjl', [UsuarioController::class, 'listarHistoricoCursosProfesorJL']);
 
 // RUTAS PARA LAS FASES
 Route::post('crear-fase', [FaseController::class, 'crearFase']);
@@ -77,6 +79,9 @@ Route::post('eliminar-fase', [FaseController::class, 'eliminarFase']);
 Route::get('listar-fases/{id}', [FaseController::class, 'listarFases']);
 Route::post('obtener-fase', [FaseController::class, 'obtenerFase']);
 Route::post('cantidad-preguntas-fase', [FaseController::class, 'obtenerCantidadPreguntas']);
+Route::post('crear-comentario-fase', [FaseController::class, 'crearComentario']);
+Route::post('listar-comentario-fase', [FaseController::class, 'listarComentarioXAlumno']);
+Route::post('crear-preguntas-aleatorias', [FaseController::class, 'crearPreguntasAleatorias']);
 
 // RUTAS PARA LAS UNIDADES ACADÉMICAS
 Route::group(['prefix' => 'unidadesacademicas'], function () {

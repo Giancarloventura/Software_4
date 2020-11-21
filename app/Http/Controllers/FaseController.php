@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 #namespace App\Models;
 
+use App\Http\Requests\CrearComentarioRequest;
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
+use App\Http\Requests\ListarComentarioXAlumnoRequest;
 use App\Http\Requests\ObtenerCantidadPreguntasRequest;
+use App\Models\Comentario;
+use App\Models\Evaluacion;
 use App\Models\FasePregunta;
 use App\Models\Pregunta;
+use App\Models\UsuarioRol;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Respuesta;
@@ -159,6 +165,7 @@ class FaseController extends Controller
             ->where('tHorario.estado', '=', 'ACT')
             ->where('tCurso.estado', '=', 'ACT')
             ->orderBy('tFase.fecha_inicio')
+            ->orderBy('tFase.hora_inicio')
             ->get();
 
         return response()->json($evaluacion, 200);
@@ -205,7 +212,7 @@ class FaseController extends Controller
             }
             $tmp = [
                 'nombre'=> $alumno -> nombre,
-                'apellido_parterno'=> $alumno->apellido_paterno,
+                'apellido_paterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
                 'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
@@ -222,5 +229,131 @@ class FaseController extends Controller
         $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
 
         return response()->json($cantidad, 200);
+    }
+
+    //Crea un comentario hecho por un alumno para una fase
+    public function crearComentario(CrearComentarioRequest $request)
+    {
+        $comentario = new Comentario();
+
+        $comentario->idtUsuario = $request->idUsuario;
+        $comentario->idtFase = $request->idFase;
+        $comentario->contenido = $request->comentario;
+        $comentario->tusuario_id_creacion = $request->idAutor;
+        $comentario->save();
+
+        return response()->json('Comentario creado exitosamente', 200);
+    }
+
+    //Listar los comentarios de un alumno en una fase
+    public function listarComentarioXAlumno(ListarComentarioXAlumnoRequest $request)
+    {
+        $comentarios = Comentario::where('tComentario.idtFase', '=', $request->idFase)
+            ->where('tComentario.idtUsuario', '=', $request->idUsuario)
+            ->orderBy('tComentario.fecha_creacion')
+            ->get();
+
+        $fase = Fase::where('tFase.id', '=', $request->idFase)->first();
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $fase->idtEvaluacion)->first();
+
+        $collection = [];
+
+        foreach($comentarios as $comentario)
+        {
+            $alumno = User::findOrFail($comentario->tusuario_id_creacion);
+            $rol = UsuarioRol::where('tUsuario_tRol.idtUsuario', '=', $comentario->tusuario_id_creacion)
+                ->where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->first();
+
+            if($rol->idtRol == 3){
+                $esProfesor = 'true';
+                $esJp = 'false';
+                $esAlumno = 'false';
+            }
+            else
+            {
+                if($rol->idtRol == 4){
+                    $esProfesor = 'false';
+                    $esJp = 'true';
+                    $esAlumno = 'false';
+                }
+                else
+                {
+                    if($rol->idtRol == 5){
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'true';
+                    }
+                    else{
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'false';
+                    }
+                }
+            }
+
+            $autor = [
+                'id'=> $comentario->tusuario_id_creacion,
+                'nombre' => $alumno->nombre,
+                'apellido_paterno'=> $alumno->apellido_paterno,
+                'apellido_materno'=> $alumno->apellido_materno,
+                'esAlumno'=> $esAlumno,
+                'esJL'=> $esJp,
+                'esProfesor'=> $esProfesor
+            ];
+
+            $tmp= [
+                'id'=> $comentario->id,
+                'idAlumno'=> $comentario->idtUsuario,
+                'idFase'=> $comentario->idtFase,
+                'comentario'=> $comentario->contenido,
+                'fecha_creacion'=> $comentario->fecha_creacion,
+                'autor'=> $autor
+            ];
+
+            $collection[]= $tmp;
+        }
+
+        return response()->json($collection, 200);
+    }
+
+    public function crearPreguntasAleatorias (Request $request)
+    {
+        try
+        {
+            $fase = Fase::select('idtEvaluacion', 'preguntas_mostradas')
+                    ->from('tFase')
+                    ->where('id', $request->idFase)->first();
+            $preguntas = Pregunta::select('p.id as idtPregunta',
+                        'p.tipo as tipo',
+                        'p.tipo_marcado as tipo_marcado')
+                        ->from('tPregunta as p')
+                        ->join('tFase_tPregunta as x', 'x.idtPregunta', '=', 'p.id')
+                        ->where('x.idtFase', $request->idFase)
+                        ->inRandomOrder()
+                        ->limit($fase->preguntas_mostradas)
+                        ->get();
+
+            if (is_null($preguntas)) return response()->json([],204);
+
+            foreach ($preguntas as $pregunta)
+            {
+                $respuesta = new Respuesta();
+                $respuesta->idtPregunta = $pregunta->idtPregunta;
+                $respuesta->idtEvaluacion = $fase->idtEvaluacion;
+                $respuesta->idtFase = $request->idFase;
+                $respuesta->estado = 0;
+                $respuesta->es_marcada = $pregunta->tipo;
+                $respuesta->tusuario_id_creacion = $request->idUsuario;
+                $respuesta->fecha_actualizacion = NULL;
+
+                $respuesta->save();
+            }
+
+            return response()->json(['status' => 'success'], 201);
+        }
+        catch (Exception $e)
+        {
+            echo 'Excepción capturada: ' . $e->getMessage() . '\n';
+        }
     }
 }
