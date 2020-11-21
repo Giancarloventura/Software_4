@@ -9,8 +9,10 @@ use App\Http\Requests\EliminarFaseRequest;
 use App\Http\Requests\ListarComentarioXAlumnoRequest;
 use App\Http\Requests\ObtenerCantidadPreguntasRequest;
 use App\Models\Comentario;
+use App\Models\Evaluacion;
 use App\Models\FasePregunta;
 use App\Models\Pregunta;
+use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use App\Models\Horario;
 use App\Models\Respuesta;
@@ -250,11 +252,43 @@ class FaseController extends Controller
             ->orderBy('tComentario.fecha_creacion')
             ->get();
 
+        $fase = Fase::where('tFase.id', '=', $request->idFase)->first();
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $fase->idtEvaluacion)->first();
+
         $collection = [];
 
         foreach($comentarios as $comentario)
         {
             $alumno = User::findOrFail($comentario->tusuario_id_creacion);
+            $rol = UsuarioRol::where('tUsuario_tRol.idtUsuario', '=', $comentario->tusuario_id_creacion)
+                ->where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->first();
+
+            if($rol->idtRol == 3){
+                $esProfesor = 'true';
+                $esJp = 'false';
+                $esAlumno = 'false';
+            }
+            else
+            {
+                if($rol->idtRol == 4){
+                    $esProfesor = 'false';
+                    $esJp = 'true';
+                    $esAlumno = 'false';
+                }
+                else
+                {
+                    if($rol->idtRol == 5){
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'true';
+                    }
+                    else{
+                        $esProfesor = 'false';
+                        $esJp = 'false';
+                        $esAlumno = 'false';
+                    }
+                }
+            }
 
             $tmp= [
                 'id'=> $comentario->id,
@@ -265,7 +299,10 @@ class FaseController extends Controller
                 'idAutor'=> $comentario->tusuario_id_creacion,
                 'nombre autor' => $alumno->nombre,
                 'apellido paterno autor'=> $alumno->apellido_paterno,
-                'apellido materno autor'=> $alumno->apellido_materno
+                'apellido materno autor'=> $alumno->apellido_materno,
+                'esAlumno autor'=> $esAlumno,
+                'esJL autor'=> $esJp,
+                'esProfesor autor'=> $esProfesor
             ];
 
             $collection[]= $tmp;
