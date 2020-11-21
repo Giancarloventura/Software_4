@@ -265,28 +265,28 @@ class FaseController extends Controller
                 ->where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->first();
 
             if($rol->idtRol == 3){
-                $esProfesor = 'true';
-                $esJp = 'false';
-                $esAlumno = 'false';
+                $esProfesor = 1;
+                $esJp = 0;
+                $esAlumno = 0;
             }
             else
             {
                 if($rol->idtRol == 4){
-                    $esProfesor = 'false';
-                    $esJp = 'true';
-                    $esAlumno = 'false';
+                    $esProfesor = 0;
+                    $esJp = 1;
+                    $esAlumno = 0;
                 }
                 else
                 {
                     if($rol->idtRol == 5){
-                        $esProfesor = 'false';
-                        $esJp = 'false';
-                        $esAlumno = 'true';
+                        $esProfesor = 0;
+                        $esJp = 0;
+                        $esAlumno = 1;
                     }
                     else{
-                        $esProfesor = 'false';
-                        $esJp = 'false';
-                        $esAlumno = 'false';
+                        $esProfesor = 0;
+                        $esJp = 0;
+                        $esAlumno = 0;
                     }
                 }
             }
