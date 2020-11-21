@@ -168,7 +168,7 @@ class UsuarioController extends Controller
             $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
 
             //Horarios donde participo el alumno
-            $participando = [];
+            $participando = false;
             foreach($horarios as $horario)
             {
                 $alumno = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $horario->id)
@@ -178,23 +178,15 @@ class UsuarioController extends Controller
 
                 if($alumno != null)
                 {
-                    $curso = Curso::where('tCurso.id', '=', $horario->idtCurso)->first();
-                    $tmp = [
-                        'codigo_curso'=> $curso->codigo,
-                        'nombre_curso'=> $curso->nombre,
-                        'horario'=> $horario->horario
-                    ];
-
-                    $participando[] = $tmp;
+                    $participando = true;
+                    break;
                 }
             }
 
-            $temp = [
-                'semestre'=> $semestre->semestre,
-                'cursos'=> $participando
-            ];
-
-            $collection[] = $temp;
+            if($participando == true)
+            {
+                $collection[] = $semestre;
+            }
         }
 
         return response()->json($collection, 200);
@@ -215,7 +207,7 @@ class UsuarioController extends Controller
             $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
 
             //Horarios donde participo el alumno
-            $participando = [];
+            $participando = false;
             foreach($horarios as $horario)
             {
                 $alumno = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $horario->id)
@@ -225,24 +217,15 @@ class UsuarioController extends Controller
 
                 if($alumno != null)
                 {
-                    $curso = Curso::where('tCurso.id', '=', $horario->idtCurso)->first();
-                    $tmp = [
-                        'codigo_curso'=> $curso->codigo,
-                        'nombre_curso'=> $curso->nombre,
-                        'horario'=> $horario->horario
-                    ];
-
-                    $participando[] = $tmp;
+                    $participando = true;
+                    break;
                 }
             }
 
-            $temp = [
-                'semestre'=> $semestre->semestre,
-                'activo' => $semestre->activo,
-                'cursos'=> $participando
-            ];
-
-            $collection[] = $temp;
+            if($participando == true)
+            {
+                $collection[] = $semestre;
+            }
         }
 
         return response()->json($collection, 200);
