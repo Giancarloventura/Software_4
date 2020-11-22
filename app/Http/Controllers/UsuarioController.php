@@ -230,4 +230,14 @@ class UsuarioController extends Controller
 
         return response()->json($collection, 200);
     }
+
+    public function obtenerUsuarioporID(Request $request)
+    {
+        $usuario = User::find($request->id);
+        return response()->json([
+            'nombre' => $usuario->nombre.' '.$usuario->apellido_paterno.' '.$usuario->apellido_materno,
+            'email' => $usuario->email,
+            'codigo' => $usuario->codigo
+        ],200);
+    }
 }

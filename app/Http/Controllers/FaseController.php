@@ -211,7 +211,8 @@ class FaseController extends Controller
                 $ultima = $pregunta->posicion;
             }
             $tmp = [
-                'nombre'=> $alumno -> nombre,
+                'id' => $alumno->id,
+                'nombre'=> $alumno->nombre,
                 'apellido_paterno'=> $alumno->apellido_paterno,
                 'apellido_materno'=> $alumno->apellido_materno,
                 'codigo' => $alumno->codigo,
