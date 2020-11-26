@@ -47,6 +47,8 @@ class FaseController extends Controller
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
+        $fase->publicacion_notas = $request->publicacion_notas;
+        $fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
         return response()->json($fase, 200);
@@ -72,6 +74,8 @@ class FaseController extends Controller
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
+        $fase->publicacion_notas = $request->publicacion_notas;
+        $fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
         return response()->json("Fase editada correctamente", 200);
@@ -227,7 +231,8 @@ class FaseController extends Controller
 
     public function obtenerCantidadPreguntas(ObtenerCantidadPreguntasRequest $request)
     {
-        $cantidad = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->count();
+        $fase = Fase::find($request->idFase);
+        $cantidad = $fase->preguntas()->where('estado', "ACT")->count();
 
         return response()->json($cantidad, 200);
     }

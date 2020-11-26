@@ -80,6 +80,9 @@ class EvaluacionController extends Controller
                 }
                 else{
                     $esta_corregido = DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase', $fase->id)->first()->esta_corregida;
+                    if($esta_corregido==1 && $fase->publicacion_notas == 1 && $fase->notas_publicadas==0){
+                        $esta_corregido = 0;
+                    }
                     $fase->esta_corregido= $esta_corregido;
                 }
             }
