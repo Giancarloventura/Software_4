@@ -47,8 +47,8 @@ class FaseController extends Controller
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
-        $fase->publicacion_notas = $request->publicacion_notas;
-        $fase->notas_publicadas = $request->notas_publicadas;
+        //$fase->publicacion_notas = $request->publicacion_notas;
+        //$fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
         return response()->json($fase, 200);
