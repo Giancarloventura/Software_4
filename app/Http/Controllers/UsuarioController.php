@@ -59,7 +59,10 @@ class UsuarioController extends Controller
         if(!isset($user)){
             return response('No se ha encontrado al usuario', 404);
         }
-
+        if($user->nombre == null){
+            $user->nombre = $request->nombre;
+            $user->save();
+        }
         $roles = $user->roles()->groupBy('idtRol')->get();
         $user->esAdmin = 0;
         $user->esAlumno = 0;
