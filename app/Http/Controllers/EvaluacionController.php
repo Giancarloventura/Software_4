@@ -77,6 +77,7 @@ class EvaluacionController extends Controller
                     $usuario = User::find($request->idUsuario);
                     $usuario->fases()->attach($fase->id);
                     $fase->esta_corregido = 0;
+                    $fase->respuestas_creadas = 0;
                 }
                 else{
                     $aux = DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase', $fase->id)->first();
