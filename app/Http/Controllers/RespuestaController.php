@@ -97,8 +97,8 @@ class RespuestaController extends Controller
     public function listarPreguntasAleatoriasdeAlumno(Request $request){
         $respuestas = Respuesta::where('idtFase', $request->idFase)->where('tusuario_id_creacion', $request->idUsuario)->get();
         $preguntas_respuestas = new Collection;
-        $alternativasRespuesta = $respuesta->alternativas()->get();
         foreach($respuestas as $respuesta){
+            $alternativasRespuesta = $respuesta->alternativas()->get();
             $pregunta = $respuesta->pregunta()->first();
             $alternativas = $pregunta->alternativas()->get();
             foreach($alternativas as $alternativa){
