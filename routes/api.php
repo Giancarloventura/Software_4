@@ -134,6 +134,7 @@ Route::post('modificar-nota-comentario-alumno', [RespuestaController::class, 'mo
 Route::post('listar-comentario-fase-alumno', [ComentarioControlador::class, 'listarComentariosPorFaseAlumno']);
 
 Route::post('listar-preguntas-de-alumno', [RespuestaController::class, 'listarPreguntasdeAlumno']);
+Route::post('listar-preguntas-de-alumno-aleatorias', [RespuestaController::class, 'listarPreguntasAleatoriasdeAlumno']);
 Route::post('listar-preguntas-de-profesor', [PreguntaController::class, 'listarPreguntasdeProfesor']);
 Route::post('guardar-respuesta', [RespuestaController::class, 'guardarRespuesta']);
 

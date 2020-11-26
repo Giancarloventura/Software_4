@@ -24,4 +24,9 @@ class Fase extends Model
         return $this->belongsToMany(Pregunta::class, 'tFase_tPregunta', 'idtFase', 'idtPregunta');
     }
 
+    public function usuarios(){
+        return $this->belongsToMany(Fase::class, 'tUsuario_tFase', 'idtFase', 'idtUsuario');
+
+    }
+
 }

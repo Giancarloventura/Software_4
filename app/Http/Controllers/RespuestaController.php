@@ -94,6 +94,35 @@ class RespuestaController extends Controller
 
     }
 
+    public function listarPreguntasAleatoriasdeAlumno(Request $request){
+        $respuestas = Respuesta::where('idtFase', $request->idFase)->where('tusuario_id_creacion', $request->idUsuario)->get();
+        $preguntas_respuestas = new Collection;
+        $alternativasRespuesta = $respuesta->alternativas()->get();
+        foreach($respuestas as $respuesta){
+            $pregunta = $respuesta->pregunta()->first();
+            $alternativas = $pregunta->alternativas()->get();
+            foreach($alternativas as $alternativa){
+                $alternativa->marcado = 0;
+            }
+            foreach($alternativasRespuesta as $alternativaRespuesta){
+                foreach($alternativas as $alternativa){
+                    if($alternativa->id == $alternativaRespuesta->id){
+                        $alternativa->marcado = 1;
+                        break;
+                    }
+                }
+            }
+            $respuesta->tipo = $pregunta->tipo;
+            $respuesta->tipoMarcado = $pregunta->tipo_marcado;
+            $respuesta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->opciones = AlternativaResource::collection($alternativas);
+            $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
+            $aux = collect(['pregunta' => new PreguntaResource($pregunta), 'respuesta' => new RespuestaResource($respuesta)]);
+            $preguntas_respuestas->push($aux);
+        }
+        return response()->json($preguntas_respuestas, 200);
+    }
+
 
     public function guardarRespuesta (Request $request){
         $respuesta = Respuesta::find($request->id);

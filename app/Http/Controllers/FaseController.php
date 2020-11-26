@@ -354,7 +354,7 @@ class FaseController extends Controller
 
                 $respuesta->save();
             }
-
+            $fase->usuarios()->updateExistingPivot($request->idUsuario,['respuestas_creadas' => 1]);
             return response()->json(['status' => 'success'], 201);
         }
         catch (Exception $e)
