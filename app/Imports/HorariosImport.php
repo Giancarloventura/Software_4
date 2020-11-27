@@ -17,10 +17,18 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 //use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class HorariosImport implements ToCollection, WithHeadingRow, SkipsOnError
+class HorariosImport implements ToCollection, WithHeadingRow, SkipsOnError, WithCustomCsvSettings
 {
     use Importable, SkipsErrors;
+
+    public function getCsvSettings(): array
+    {
+        return [
+            'delimiter' => ';'
+        ];
+    }
 
     public function __construct(string $idSemestre, string $codCurso) 
     {
