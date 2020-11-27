@@ -12,10 +12,18 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 //use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class CursosImport implements ToModel, WithHeadingRow, SkipsOnError
+class CursosImport implements ToModel, WithHeadingRow, SkipsOnError, WithCustomCsvSettings
 {
     use Importable, SkipsErrors;
+
+    public function getCsvSettings(): array
+    {
+        return [
+            'delimiter' => ';'
+        ];
+    }
 
     public function __construct(string $idUnidadAcademica) 
     {
