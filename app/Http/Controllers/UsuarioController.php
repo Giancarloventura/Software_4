@@ -69,7 +69,7 @@ class UsuarioController extends Controller
         $user->esCoordinador = 0;
         $user->esProfesor = 0;
         $user->esJL = 0;
-        if($user->unidadAcademica()->get()->count()){
+        if($user->unidadAcademica()->where('estado', "ACT")->get()->count()){
             $user->esCoordinador = 1;
         }
         foreach($roles as $rol){
