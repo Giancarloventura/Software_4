@@ -167,6 +167,8 @@ class PreguntaController extends Controller
                 $pregunta_posterior->posicion = $pregunta_posterior->posicion-1;
                 $pregunta_posterior->save();
             }
+            $fase = $pregunta->fase()->first();
+            $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
             return response()->json(['status' => 'success'], 200);
         }catch (Exception $exception){
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';

@@ -18,4 +18,9 @@ class Pregunta extends Model
         return $this->hasMany(AlternativaPregunta::class, 'idtPregunta');
     }
 
+    public function fase()
+    {
+        return $this->belongsToMany(Pregunta::class, 'tFase_tPregunta', 'idtPregunta', 'idtFase');
+    }
+
 }
