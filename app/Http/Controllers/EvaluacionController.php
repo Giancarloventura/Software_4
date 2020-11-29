@@ -356,17 +356,17 @@ class EvaluacionController extends Controller
                 }
             }
 
-            if($puntajeAlumno > $notaMaxima)
+            if(round($puntajeAlumno) > $notaMaxima)
             {
-                $notaMaxima = $puntajeAlumno;
+                $notaMaxima = round($puntajeAlumno);
             }
 
-            if($puntajeAlumno < $notaMinima)
+            if(round($puntajeAlumno) < $notaMinima)
             {
-                $notaMinima = $puntajeAlumno;
+                $notaMinima = round($puntajeAlumno);
             }
 
-            if($puntajeAlumno > $notaAprobatoria)
+            if(round($puntajeAlumno) > $notaAprobatoria)
             {
                 $cantidadAprobados++;
             }
@@ -410,6 +410,8 @@ class EvaluacionController extends Controller
         $cantidadAprobados = 0;
         $cantidadDesaprobados = 0;
 
+        $collection = [];
+
         foreach($alumnos as $alumno)
         {
             $puntajeAlumno = 0;
@@ -435,7 +437,7 @@ class EvaluacionController extends Controller
                 }
             }
 
-            if($puntajeAlumno > $notaAprobatoria)
+            if(round($puntajeAlumno) > $notaAprobatoria)
             {
                 $cantidadAprobados++;
             }
@@ -445,10 +447,17 @@ class EvaluacionController extends Controller
             }
         }
 
-        $collection = [
-            'Aprobados'=> $cantidadAprobados,
-            'Desaprobados'=> $cantidadDesaprobados
+        $tmp = [
+            'titulo'=> 'Aprobados',
+            'cantidad'=> $cantidadAprobados
         ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'titulo'=> 'Desaprobados',
+            'cantidad'=> $cantidadDesaprobados
+        ];
+        $collection[] = $tmp;
 
         return response()->json($collection, 200);
     }
@@ -499,7 +508,7 @@ class EvaluacionController extends Controller
 
             for($i = 0; $i < $cantidadNotas; $i++)
             {
-                if($puntajeAlumno == $i)
+                if(round($puntajeAlumno) == $i)
                 {
                     $notas[$i] = $notas[$i] + 1;
                     break;
