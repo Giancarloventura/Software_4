@@ -83,6 +83,7 @@ class PreguntaController extends Controller
             $fase = $pregunta->fase()->first();
             if($fase->preguntas_aleatorias==1){
                 $fase->puntaje = $pregunta->puntaje*$fase->preguntas_mostradas;
+                $fase->preguntas()->update(['puntaje'=>$pregunta->puntaje]);
             }
             else{
                 $fase->puntaje = $fase->puntaje - $puntajeOld+$pregunta->puntaje;
