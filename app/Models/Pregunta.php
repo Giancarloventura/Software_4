@@ -20,7 +20,7 @@ class Pregunta extends Model
 
     public function fase()
     {
-        return $this->belongsToMany(Pregunta::class, 'tFase_tPregunta', 'idtPregunta', 'idtFase');
+        return $this->belongsToMany(Fase::class, 'tFase_tPregunta', 'idtPregunta', 'idtFase');
     }
 
 }
