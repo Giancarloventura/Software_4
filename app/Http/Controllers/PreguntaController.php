@@ -181,12 +181,16 @@ class PreguntaController extends Controller
                 $pregunta_posterior->posicion = $pregunta_posterior->posicion-1;
                 $pregunta_posterior->save();
             }
+            
             $fase = $pregunta->fase()->first();
-            $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
-            $fase->save();
-            $evaluacion = $fase->evaluacion()->first();
-            $evaluacion->puntaje=$evaluacion->puntaje-$pregunta->puntaje;
-            $evaluacion->save();
+            if($fase->preguntas_aleatorias==0){
+                $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
+                $fase->save();
+                $evaluacion = $fase->evaluacion()->first();
+                $evaluacion->puntaje=$evaluacion->puntaje-$pregunta->puntaje;
+                $evaluacion->save();
+            }
+            
             return response()->json(['status' => 'success'], 200);
         }catch (Exception $exception){
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
