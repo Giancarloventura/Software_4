@@ -84,7 +84,8 @@ class FaseController extends Controller
     //Borra la fase completamente, porque no hay un estado en la tabla
     public function eliminarFase(EliminarFaseRequest $request)
     {
-        if($fase = Fase::where("tFase.id", $request->id)->count() == 0){ // La fase no existe
+        $fase = Fase::find($request->id);
+        if($fase == null){ // La fase no existe
             return response()->json("La fase ingresada no existe", 200);
         }
         else{
