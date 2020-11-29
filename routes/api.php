@@ -38,6 +38,7 @@ Route::post('copiar-evaluacion', [EvaluacionController::class, 'copiarEvaluacion
 Route::post('dashboard-evaluacion', [EvaluacionController::class, 'dashboardEvaluacion']);
 Route::post('eliminar-evaluacion', [EvaluacionController::class, 'eliminarEvaluacion']);
 Route::post('editar-evaluacion', [EvaluacionController::class, 'editarEvaluacion']);
+Route::post('listar-notas-evaluaciones', [EvaluacionController::class, 'listarNotasEvaluaciones']);
 
 // RUTAS PARA LOS CURSOS
 Route::get('cursos-actuales', [CursoController::class, 'listarCursosActuales']);
