@@ -37,7 +37,7 @@ class EvaluacionController extends Controller
         return response()->json($evaluaciones, 200);
     }
 
-    public function eliminarEvaluacion()
+    public function eliminarEvaluacion(Request $request)
     {
         $evaluacion = Evaluacion::find($request->id);
         if($evaluacion == null){ // La fase no existe

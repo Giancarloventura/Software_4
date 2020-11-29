@@ -96,7 +96,6 @@ class FaseController extends Controller
             return response()->json("Fase eliminada exitosamente", 200);
         }
 
-
     }
 
     public function agregarPreguntaXFase(Request $request){
