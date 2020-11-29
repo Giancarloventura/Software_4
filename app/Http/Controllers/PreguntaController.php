@@ -170,6 +170,9 @@ class PreguntaController extends Controller
             $fase = $pregunta->fase()->first();
             $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
             $fase->save();
+            $evaluacion = $fase->evaluacion()->first();
+            $evaluacion->puntaje=$evaluacion->puntaje-$pregunta->puntaje;
+            $evaluacion->save();
             return response()->json(['status' => 'success'], 200);
         }catch (Exception $exception){
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';
