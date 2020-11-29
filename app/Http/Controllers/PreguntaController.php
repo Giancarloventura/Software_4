@@ -74,11 +74,20 @@ class PreguntaController extends Controller
         try
         {
             $pregunta = Pregunta::findOrFail($request->id);
-
+            $puntajeOld = $pregunta->puntaje;
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
             $pregunta->comentario = $request->feedback;
+
+            $fase->$pregunta->fase()->first();
+            if($fase->preguntas_aleatorias==1){
+                $fase->puntaje = $pregunta->puntaje*$fase->preguntas_mostradas;
+            }
+            else{
+                $fase->puntaje = $fase->puntaje - $puntajeOld+$pregunta->puntaje;
+            }
+            $fase->save();
 
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
