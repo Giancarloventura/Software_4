@@ -49,6 +49,14 @@ class EvaluacionController extends Controller
         }
     }
 
+    public function editarEvaluacion(Request $request)
+    {
+        $evaluacion = Evaluacion::find($request->id);
+        $evaluacion->nombre = $request->nombre;
+        $evaluacion->save();
+        return response()->json("Evaluacion editada exitosamente", 200);
+    }
+
 	public function listarEvaluacionesXHorario(ListarEvaluacionXHorarioRequest $request)
     {
         $horario = Horario::join('tUsuario_tRol', 'tUsuario_tRol.idtHorario', '=', 'tHorario.id')
