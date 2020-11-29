@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 #namespace App\Models;
 
 use App\Http\Requests\CrearComentarioRequest;
+use App\Http\Requests\DashboardFaseRequest;
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
 use App\Http\Requests\ListarComentarioXAlumnoRequest;
@@ -369,5 +370,52 @@ class FaseController extends Controller
         {
             echo 'Excepción capturada: ' . $e->getMessage() . '\n';
         }
+    }
+
+    public function dashboardFase (DashboardFaseRequest $request)
+    {
+        $preguntas = FasePregunta::where('tFase_tPregunta.idtFase', '=', $request->idFase)->get();
+
+        $collection = [];
+
+        foreach($preguntas as $pregunta)
+        {
+            $puntaje = Pregunta::where('tPregunta.id', '=', $pregunta->idtPregunta)->first();
+            $respuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->get();
+            $cantidadRespuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->count();
+
+            $cantMaximo = 0;
+            $cantMinimo = 0;
+            $cantIntermedio = 0;
+
+            foreach($respuestas as $respuesta)
+            {
+                if($respuesta->puntaje_obtenido == $puntaje->puntaje)
+                {
+                    $cantMaximo++;
+                }
+                else if($respuesta->puntaje_obtenido == 0)
+                {
+                    $cantMinimo++;
+                }
+                else
+                {
+                    $cantIntermedio++;
+                }
+            }
+
+            $tmp= [
+                'id'=> $puntaje->id,
+                'pregunta'=> $puntaje->posicion,
+                'cantidad_respuestas'=> $cantidadRespuestas,
+                'cantidad_puntaje_completo'=> $cantMaximo,
+                'cantidad_puntaje_intermedio'=> $cantIntermedio,
+                'cantidad_puntaje_cero'=> $cantMinimo
+            ];
+
+            $collection[]= $tmp;
+        }
+
+        return response()->json($collection, 200);
     }
 }

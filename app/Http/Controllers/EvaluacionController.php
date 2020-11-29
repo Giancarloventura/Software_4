@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CopiarEvaluacionRequest;
+use App\Http\Requests\DashboardEvaluacionRequest;
 use App\Http\Requests\ObtenerEvaluacionXCodigoRequest;
+use App\Models\Respuesta;
+use App\Models\UsuarioFase;
+use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Evaluacion;
@@ -278,6 +282,88 @@ class EvaluacionController extends Controller
 
         return response()->json($arregloEval, 200);
 
+    }
+
+    public function dashboardEvaluacion (DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $notaAprobatoria = $evaluacion->puntaje/2;
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        $cantidadAprobados = 0;
+        $notaMaxima = 0;
+        $notaMinima = 1000;
+
+        $collection = [];
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+            
+            if($puntajeAlumno > $notaMaxima)
+            {
+                $notaMaxima = $puntajeAlumno;
+            }
+
+            if($puntajeAlumno < $notaMinima)
+            {
+                $notaMinima = $puntajeAlumno;
+            }
+
+            if($puntajeAlumno > $notaAprobatoria)
+            {
+                $cantidadAprobados++;
+            }
+        }
+
+        $tmp = [
+            'icon'=> "spellcheck",
+            'title'=> "Cantidad aprobados",
+            'value'=> $cantidadAprobados
+        ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'icon'=> "thumb_up",
+            'title'=> "Nota maxima",
+            'value'=> $notaMaxima
+        ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'icon'=> "thumb_down",
+            'title'=> "Nota minima",
+            'value'=> $notaMinima
+        ];
+        $collection[] = $tmp;
+
+        return response()->json($collection, 200);
     }
 }
 
