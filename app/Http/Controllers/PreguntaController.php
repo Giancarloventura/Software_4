@@ -81,6 +81,7 @@ class PreguntaController extends Controller
             $pregunta->comentario = $request->feedback;
 
             $fase = $pregunta->fase()->first();
+            $puntajeOldFase = $fase->puntaje;
             if($fase->preguntas_aleatorias==1){
                 $fase->puntaje = $pregunta->puntaje*$fase->preguntas_mostradas;
                 $fase->preguntas()->update(['puntaje'=>$pregunta->puntaje]);
@@ -90,7 +91,7 @@ class PreguntaController extends Controller
             }
             $fase->save();
             $evaluacion = $fase->evaluacion()->first();
-            $evaluacion->puntaje=$evaluacion->puntaje-$puntajeOld+$pregunta->puntaje;
+            $evaluacion->puntaje=$evaluacion->puntaje-$puntajeOldFase+$fase->puntaje;
             $evaluacion->save();
 
             if($pregunta->tipo == 0){
