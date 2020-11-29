@@ -35,6 +35,7 @@ Route::get('evaluaciones', [EvaluacionController::class, 'listarEvaluaciones']);
 Route::post('evaluacion-codigo', [EvaluacionController::class, 'obtenerEvaluacionXCodigo']);
 Route::post('obtener-fases-de-evaluacion', [EvaluacionController::class, 'obtenerFasesXEvaluacion']);
 Route::post('copiar-evaluacion', [EvaluacionController::class, 'copiarEvaluacion']);
+Route::post('eliminar-evaluacion', [EvaluacionController::class, 'eliminarEvaluacion']);
 
 // RUTAS PARA LOS CURSOS
 Route::get('cursos-actuales', [CursoController::class, 'listarCursosActuales']);
