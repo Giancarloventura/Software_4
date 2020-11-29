@@ -88,6 +88,9 @@ class FaseController extends Controller
             return response()->json("La fase ingresada no existe", 200);
         }
         else{
+            $evaluacion = $fase->evaluacion()->first();
+            $evaluacion->puntaje=$evaluacion->puntaje-$fase->puntaje;
+            $evaluacion->save();
             $retirar = Fase::destroy($request->id);
             return response()->json("Fase eliminada exitosamente", 200);
         }
