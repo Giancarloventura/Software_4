@@ -89,6 +89,9 @@ class PreguntaController extends Controller
                 $fase->puntaje = $fase->puntaje - $puntajeOld+$pregunta->puntaje;
             }
             $fase->save();
+            $evaluacion = $fase->evaluacion()->first();
+            $evaluacion->puntaje=$evaluacion->puntaje-$puntajeOld+$pregunta->puntaje;
+            $evaluacion->save();
 
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
