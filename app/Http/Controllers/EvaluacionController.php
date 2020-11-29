@@ -396,6 +396,130 @@ class EvaluacionController extends Controller
         return response()->json($collection, 200);
     }
 
+    public function pieChartAprobados(DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $notaAprobatoria = $evaluacion->puntaje/2;
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        $cantidadAprobados = 0;
+        $cantidadDesaprobados = 0;
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+
+            if($puntajeAlumno > $notaAprobatoria)
+            {
+                $cantidadAprobados++;
+            }
+            else
+            {
+                $cantidadDesaprobados++;
+            }
+        }
+
+        $collection = [
+            'Aprobados'=> $cantidadAprobados,
+            'Desaprobados'=> $cantidadDesaprobados
+        ];
+
+        return response()->json($collection, 200);
+    }
+
+    public function distribucionNotas(DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $cantidadNotas = $evaluacion->puntaje + 1;
+
+        $notas = array();
+        for($j = 0; $j < $cantidadNotas; $j++)
+        {
+            $notas[] = 0;
+        }
+
+        $collection = [];
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+
+            for($i = 0; $i < $cantidadNotas; $i++)
+            {
+                if($puntajeAlumno == $i)
+                {
+                    $notas[$i] = $notas[$i] + 1;
+                    break;
+                }
+            }
+        }
+
+        for($j = 0; $j < $cantidadNotas; $j++)
+        {
+            $tmp = [
+                'Nota'=> $j,
+                'Cantidad'=> $notas[$j]
+            ];
+
+            $collection[] = $tmp;
+        }
+
+        return response()->json($collection, 200);
+    }
+
     public function listarNotasEvaluaciones (Request $request)
     {
         $result=array();
