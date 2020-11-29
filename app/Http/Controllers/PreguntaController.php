@@ -74,11 +74,25 @@ class PreguntaController extends Controller
         try
         {
             $pregunta = Pregunta::findOrFail($request->id);
-
+            $puntajeOld = $pregunta->puntaje;
             $pregunta->enunciado = $request->enunciado;
             $pregunta->cant_intentos = $request->cant_intentos;
             $pregunta->puntaje = $request->puntaje;
             $pregunta->comentario = $request->feedback;
+
+            $fase = $pregunta->fase()->first();
+            $puntajeOldFase = $fase->puntaje;
+            if($fase->preguntas_aleatorias==1){
+                $fase->puntaje = $pregunta->puntaje*$fase->preguntas_mostradas;
+                $fase->preguntas()->update(['puntaje'=>$pregunta->puntaje]);
+            }
+            else{
+                $fase->puntaje = $fase->puntaje - $puntajeOld+$pregunta->puntaje;
+            }
+            $fase->save();
+            $evaluacion = $fase->evaluacion()->first();
+            $evaluacion->puntaje=$evaluacion->puntaje-$puntajeOldFase+$fase->puntaje;
+            $evaluacion->save();
 
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
@@ -167,12 +181,16 @@ class PreguntaController extends Controller
                 $pregunta_posterior->posicion = $pregunta_posterior->posicion-1;
                 $pregunta_posterior->save();
             }
+            
             $fase = $pregunta->fase()->first();
-            $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
-            $fase->save();
-            $evaluacion = $fase->evaluacion()->first();
-            $evaluacion->puntaje=$evaluacion->puntaje-$pregunta->puntaje;
-            $evaluacion->save();
+            if($fase->preguntas_aleatorias==0){
+                $fase->puntaje = $fase->puntaje-$pregunta->puntaje;
+                $fase->save();
+                $evaluacion = $fase->evaluacion()->first();
+                $evaluacion->puntaje=$evaluacion->puntaje-$pregunta->puntaje;
+                $evaluacion->save();
+            }
+            
             return response()->json(['status' => 'success'], 200);
         }catch (Exception $exception){
             echo 'Excepción capturada: ' . $exception->getMessage() . '\n';

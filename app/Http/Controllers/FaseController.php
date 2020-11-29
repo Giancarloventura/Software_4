@@ -97,7 +97,6 @@ class FaseController extends Controller
             return response()->json("Fase eliminada exitosamente", 200);
         }
 
-
     }
 
     public function agregarPreguntaXFase(Request $request){
@@ -340,6 +339,7 @@ class FaseController extends Controller
                         ->from('tPregunta as p')
                         ->join('tFase_tPregunta as x', 'x.idtPregunta', '=', 'p.id')
                         ->where('x.idtFase', $request->idFase)
+                        ->where('p.estado',"ACT")
                         ->inRandomOrder()
                         ->limit($fase->preguntas_mostradas)
                         ->get();
