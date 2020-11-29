@@ -37,6 +37,18 @@ class EvaluacionController extends Controller
         return response()->json($evaluaciones, 200);
     }
 
+    public function eliminarEvaluacion()
+    {
+        $evaluacion = Evaluacion::find($request->id);
+        if($evaluacion == null){ // La fase no existe
+            return response()->json("La evaluacion ingresada no existe", 200);
+        }
+        else{
+            $retirar = Evaluacion::destroy($request->id);
+            return response()->json("Evaluacion eliminada exitosamente", 200);
+        }
+    }
+
 	public function listarEvaluacionesXHorario(ListarEvaluacionXHorarioRequest $request)
     {
         $horario = Horario::join('tUsuario_tRol', 'tUsuario_tRol.idtHorario', '=', 'tHorario.id')
