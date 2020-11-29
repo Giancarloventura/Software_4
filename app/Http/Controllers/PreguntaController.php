@@ -80,7 +80,7 @@ class PreguntaController extends Controller
             $pregunta->puntaje = $request->puntaje;
             $pregunta->comentario = $request->feedback;
 
-            $fase->$pregunta->fase()->first();
+            $fase = $pregunta->fase()->first();
             if($fase->preguntas_aleatorias==1){
                 $fase->puntaje = $pregunta->puntaje*$fase->preguntas_mostradas;
             }
