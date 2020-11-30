@@ -14,7 +14,7 @@ use App\Models\Fase;
 
 class RespuestaController extends Controller
 {
-    public function modificarNotaComentarioAlumno(ModificarNotaAlumnoRequest $request)
+    public function modificarNotaComentarioAlumno(Request $request)
     {
         $respuesta = Respuesta::findOrFail($request->idRespuesta);
         $respuesta->puntaje_obtenido = $request->puntaje;
