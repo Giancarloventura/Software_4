@@ -118,7 +118,7 @@ class FaseController extends Controller
             
             //Preguntas:
             //$pregunta->id = $request->idPregunta;
-            $pregunta->puntaje=$fase->puntaje/$fase->preguntas_aleatorias;
+            $pregunta->puntaje=$fase->puntaje/$fase->preguntas_mostradas;
             $pregunta->tipo = $request->tipo;
             $pregunta->estado = 'ACT';
             if($pregunta->tipo==0){
