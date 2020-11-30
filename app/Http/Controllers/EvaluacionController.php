@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CopiarEvaluacionRequest;
+use App\Http\Requests\DashboardEvaluacionRequest;
 use App\Http\Requests\ObtenerEvaluacionXCodigoRequest;
+use App\Models\Respuesta;
+use App\Models\UsuarioFase;
+use App\Models\UsuarioRol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Evaluacion;
@@ -216,15 +220,18 @@ class EvaluacionController extends Controller
 
     public function resumenNotasAlumno(Request $request){
         $arregloEval = array();
-        $puntaje_tot_eval=0;
-        $estaCorregidoEval=true;
+
 
 
         $evaluaciones=Evaluacion::where('idtHorario', '=', $request->idtHorario)->get();
 
         foreach ($evaluaciones as $evaluacion) {
 
+            $puntaje_tot_eval=0;
+            $estaCorregidoEval=true;
+
             $arregloFase=array();
+
             $fases=Fase::where('idtEvaluacion', '=', $evaluacion->id)->get();
 
             foreach ($fases as $fase){
@@ -243,27 +250,34 @@ class EvaluacionController extends Controller
 
                 if($estaCorregidoFase == null){
                     $estaCorregidoEval = false;
+
                     $mi_fase=['nombre'=>$fase->nombre,
                         'puntaje'=>null,
                         'puntajeMax'=>$fase->puntaje,
                         'estaCorregido'=>null];
+
                 }
 
                 else if($estaCorregidoFase->esta_corregida==0 ) {
                     $boolEstaCorregidoFase=false;
                     $estaCorregidoEval = false;
 
+
                     $mi_fase=['nombre'=>$fase->nombre,
                         'puntaje'=>null,
                         'puntajeMax'=>$fase->puntaje,
                         'estaCorregido'=>$boolEstaCorregidoFase];
+
                 }
                 else if($estaCorregidoFase->esta_corregida==1 ){
                     $boolEstaCorregidoFase=true;
+
+
                     $mi_fase=['nombre'=>$fase->nombre,
                         'puntaje'=>$puntaje_obtenido->puntaje_obtenido,
                         'puntajeMax'=>$fase->puntaje,
                         'estaCorregido'=>$boolEstaCorregidoFase];
+
 
                     $puntaje_tot_eval+=$puntaje_obtenido->puntaje_obtenido;
 
@@ -297,6 +311,317 @@ class EvaluacionController extends Controller
         }
 
         return response()->json($arregloEval, 200);
+
+    }
+
+    public function dashboardEvaluacion (DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $notaAprobatoria = $evaluacion->puntaje/2;
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        $cantidadAprobados = 0;
+        $notaMaxima = 0;
+        $notaMinima = 1000;
+
+        $collection = [];
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+
+            if(round($puntajeAlumno) > $notaMaxima)
+            {
+                $notaMaxima = round($puntajeAlumno);
+            }
+
+            if(round($puntajeAlumno) < $notaMinima)
+            {
+                $notaMinima = round($puntajeAlumno);
+            }
+
+            if(round($puntajeAlumno) > $notaAprobatoria)
+            {
+                $cantidadAprobados++;
+            }
+        }
+
+        $tmp = [
+            'icon'=> "spellcheck",
+            'title'=> "Cantidad aprobados",
+            'value'=> $cantidadAprobados
+        ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'icon'=> "thumb_up",
+            'title'=> "Nota maxima",
+            'value'=> $notaMaxima
+        ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'icon'=> "thumb_down",
+            'title'=> "Nota minima",
+            'value'=> $notaMinima
+        ];
+        $collection[] = $tmp;
+
+        return response()->json($collection, 200);
+    }
+
+    public function pieChartAprobados(DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $notaAprobatoria = $evaluacion->puntaje/2;
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        $cantidadAprobados = 0;
+        $cantidadDesaprobados = 0;
+
+        $collection = [];
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+
+            if(round($puntajeAlumno) > $notaAprobatoria)
+            {
+                $cantidadAprobados++;
+            }
+            else
+            {
+                $cantidadDesaprobados++;
+            }
+        }
+
+        $tmp = [
+            'titulo'=> 'Aprobados',
+            'cantidad'=> $cantidadAprobados
+        ];
+        $collection[] = $tmp;
+
+        $tmp = [
+            'titulo'=> 'Desaprobados',
+            'cantidad'=> $cantidadDesaprobados
+        ];
+        $collection[] = $tmp;
+
+        return response()->json($collection, 200);
+    }
+
+    public function distribucionNotas(DashboardEvaluacionRequest $request)
+    {
+        //Obtengo los datos de la evaluacion
+        $evaluacion = Evaluacion::where('tEvaluacion.id', '=', $request->idEvaluacion)->first();
+        $cantidadNotas = $evaluacion->puntaje + 1;
+
+        $notas = array();
+        for($j = 0; $j < $cantidadNotas; $j++)
+        {
+            $notas[] = 0;
+        }
+
+        $collection = [];
+
+        //Obtengo los alumnos de la evaluacion
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+
+        $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
+
+        foreach($alumnos as $alumno)
+        {
+            $puntajeAlumno = 0;
+
+            foreach($fases as $fase)
+            {
+                $faseAlumno = UsuarioFase::where('tUsuario_tFase.idtUsuario', '=', $alumno->idtUsuario)
+                    ->where('tUsuario_tFase.idtFase', '=', $fase->id)
+                    ->first();
+
+                if($faseAlumno != null)
+                {
+                    if($faseAlumno->puntaje_obtenido == null)
+                    {
+                        $puntajeFase = 0;
+                    }
+                    else
+                    {
+                        $puntajeFase = $faseAlumno->puntaje_obtenido;
+                    }
+
+                    $puntajeAlumno += $puntajeFase;
+                }
+            }
+
+            for($i = 0; $i < $cantidadNotas; $i++)
+            {
+                if(round($puntajeAlumno) == $i)
+                {
+                    $notas[$i] = $notas[$i] + 1;
+                    break;
+                }
+            }
+        }
+
+        for($j = 0; $j < $cantidadNotas; $j++)
+        {
+            $tmp = [
+                'Nota'=> $j,
+                'Cantidad'=> $notas[$j]
+            ];
+
+            $collection[] = $tmp;
+        }
+
+        return response()->json($collection, 200);
+    }
+
+    public function listarNotasEvaluaciones (Request $request)
+    {
+        $result=array();
+        $evaluaciones = Evaluacion::select('tEvaluacion.id', 'tEvaluacion.nombre', 'tEvaluacion.puntaje')
+            ->where('tEvaluacion.idtHorario', '=', $request->idtHorario)
+            ->get();
+
+
+        $arregloAlumnos=array();
+
+        $alumnos = User::join('tUsuario_tRol', 'tUsuario_tRol.idtUsuario', '=', 'tUsuario.id')
+            ->select('tUsuario.id', 'tUsuario.codigo', 'tUsuario.nombre')
+            ->where('idtHorario', '=', $request->idtHorario)
+            ->where('idtRol','=', 5)
+            ->get();
+
+        foreach ($alumnos as $alumno){
+            $arregloEval = array();
+
+            foreach ($evaluaciones as $evaluacion) {
+
+                $puntaje_tot_eval = 0;
+                $estaCorregidoEval = true;
+
+                $fases = Fase::where('idtEvaluacion', '=', $evaluacion->id)->get();
+                foreach ($fases as $fase) {
+
+                    $puntaje_obtenido = DB::table('tUsuario_tFase')
+                        ->select(DB::raw('tUsuario_tFase.puntaje_obtenido'))
+                        ->where('idtFase', '=', $fase->id, 'and')
+                        ->where('idtUsuario', '=', $request->idtUsuario)
+                        ->first();
+
+                    $estaCorregidoFase = DB::table('tUsuario_tFase')
+                        ->select(DB::raw('tUsuario_tFase.esta_corregida'))
+                        ->where('idtFase', '=', $fase->id, 'and')
+                        ->where('idtUsuario', '=', $request->idtUsuario)
+                        ->first();
+
+                    if ($estaCorregidoFase == null) {
+                        $estaCorregidoEval = false;
+
+                    } else if ($estaCorregidoFase->esta_corregida == 0) {
+                        $estaCorregidoEval = false;
+
+                    } else if ($estaCorregidoFase->esta_corregida == 1) {
+
+                        if($fase->publicacion_notas = 0){
+                            $boolEstaCorregidoFase = true;
+                        }
+                        else if($fase->publicacion_notas = 1){
+                            if($fase->notas_publicadas = 0){
+                                $boolEstaCorregidoFase = false;
+                                $estaCorregidoEval = false;
+                            }
+                            else if($fase->notas_publicadas = 1){
+                                $boolEstaCorregidoFase = true;
+                                $puntaje_tot_eval += $puntaje_obtenido->puntaje_obtenido;
+                            }
+                        }
+
+                    }
+
+                }
+                if($estaCorregidoEval){
+                    $mi_eval=['idEvaluacion'=>$evaluacion->id,
+                        'puntaje'=>$puntaje_tot_eval,
+                        'estaCorregido'=>$estaCorregidoEval];
+                }
+                else{
+                    $mi_eval=['idEvaluacion'=>$evaluacion->id,
+                        'puntaje'=>null,
+                        'estaCorregido'=>$estaCorregidoEval];
+                }
+
+                array_push($arregloEval, $mi_eval);
+
+
+            }
+            $mi_alumno=['id'=>$alumno->id,
+                'codigo'=>$alumno->codigo,
+                'nombre'=>$alumno->nombre,
+                'notasObtenidas'=>$arregloEval];
+
+            array_push($arregloAlumnos, $mi_alumno);
+
+        }
+
+       array_push($result,$evaluaciones );
+       array_push($result, $arregloAlumnos);
+
+
+        return response()->json($result, 200);
 
     }
 }

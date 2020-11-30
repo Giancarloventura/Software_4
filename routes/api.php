@@ -35,8 +35,12 @@ Route::get('evaluaciones', [EvaluacionController::class, 'listarEvaluaciones']);
 Route::post('evaluacion-codigo', [EvaluacionController::class, 'obtenerEvaluacionXCodigo']);
 Route::post('obtener-fases-de-evaluacion', [EvaluacionController::class, 'obtenerFasesXEvaluacion']);
 Route::post('copiar-evaluacion', [EvaluacionController::class, 'copiarEvaluacion']);
+Route::post('dashboard-evaluacion', [EvaluacionController::class, 'dashboardEvaluacion']);
 Route::post('eliminar-evaluacion', [EvaluacionController::class, 'eliminarEvaluacion']);
 Route::post('editar-evaluacion', [EvaluacionController::class, 'editarEvaluacion']);
+Route::post('listar-notas-evaluaciones', [EvaluacionController::class, 'listarNotasEvaluaciones']);
+Route::post('piechart-aprobados', [EvaluacionController::class, 'pieChartAprobados']);
+Route::post('distribucion-notas', [EvaluacionController::class, 'distribucionNotas']);
 
 // RUTAS PARA LOS CURSOS
 Route::get('cursos-actuales', [CursoController::class, 'listarCursosActuales']);
@@ -85,6 +89,7 @@ Route::post('cantidad-preguntas-fase', [FaseController::class, 'obtenerCantidadP
 Route::post('crear-comentario-fase', [FaseController::class, 'crearComentario']);
 Route::post('listar-comentario-fase', [FaseController::class, 'listarComentarioXAlumno']);
 Route::post('crear-preguntas-aleatorias', [FaseController::class, 'crearPreguntasAleatorias']);
+Route::post('dashboard-fase', [FaseController::class, 'dashboardFase']);
 
 // RUTAS PARA LAS UNIDADES ACADÉMICAS
 Route::group(['prefix' => 'unidadesacademicas'], function () {
