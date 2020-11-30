@@ -116,7 +116,7 @@ class FaseController extends Controller
             $pregunta = new Pregunta();
             $fasePregunta = new FasePregunta();
             $fase = Fase::find($request->idFase);
-            
+
             //Preguntas:
             //$pregunta->id = $request->idPregunta;
             $pregunta->puntaje=$fase->puntaje/$fase->preguntas_mostradas;
@@ -382,7 +382,9 @@ class FaseController extends Controller
 
         foreach($preguntas as $pregunta)
         {
-            $puntaje = Pregunta::where('tPregunta.id', '=', $pregunta->idtPregunta)->first();
+            $puntaje = Pregunta::where('tPregunta.id', '=', $pregunta->idtPregunta)
+                ->where('tPregunta.estado', '=', 'ACT')
+                ->first();
             $respuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->get();
             $cantidadRespuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->count();
 
