@@ -18,7 +18,8 @@ class RespuestaController extends Controller
     {
         $respuesta = Respuesta::findOrFail($request->idRespuesta);
         $respuesta->puntaje_obtenido = $request->puntaje;
-        $respuesta->comentario = $request->comentario;
+        if(!($request->comentario==null))
+            $respuesta->comentario = $request->comentario;
         $respuesta->tUsuario_id_actualizacion = $request->idProfesor;
         $respuesta->estado = 2;
         $respuesta->save();
