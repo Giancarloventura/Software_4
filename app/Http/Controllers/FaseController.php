@@ -192,7 +192,8 @@ class FaseController extends Controller
     public function setNotasPublicadas(Request $request)
     {
         $fase = Fase::find($request->id);
-        
+        $fase->notas_publicadas = 1;
+        $fase->save();
     }
 
     public function obtenerFase(Request $request)
