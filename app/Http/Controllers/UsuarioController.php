@@ -209,7 +209,7 @@ class UsuarioController extends Controller
         {
 
             //Consigo todos los horarios del semestre a analizar
-            $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->get();
+            $horarios = Horario::where('tHorario.idtSemestre', '=', $semestre->id)->where('estado', "ACT")->get();
 
             //Horarios donde participo el alumno
             $participando = false;
