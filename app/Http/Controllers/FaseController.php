@@ -49,7 +49,10 @@ class FaseController extends Controller
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
         $fase->publicacion_notas = $request->publicacion_notas;
-        //$fase->notas_publicadas = $request->notas_publicadas;
+        if($request->publicacion_notas == 1){
+            $fase->notas_publicadas = 0;
+        }
+        
         $fase->save();
 
         return response()->json($fase, 200);
@@ -76,6 +79,9 @@ class FaseController extends Controller
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
         $fase->publicacion_notas = $request->publicacion_notas;
+        if($request->publicacion_notas == 1){
+            $fase->notas_publicadas = 0;
+        }
         //$fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
@@ -181,6 +187,12 @@ class FaseController extends Controller
             ->get();
 
         return response()->json($evaluacion, 200);
+    }
+
+    public function setNotasPublicadas(Request $request)
+    {
+        $fase = Fase::find($request->id);
+        
     }
 
     public function obtenerFase(Request $request)
