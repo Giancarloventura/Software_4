@@ -13,7 +13,7 @@ class SemestreController extends Controller
     {
         $diaActual = date("Y-m-d H:i:s");
 
-        $semestreActual = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('tSemestre.fecha_inicio', '<=', $diaActual)
+        $semestreActual = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('estado', "ACT")->where('tSemestre.fecha_inicio', '<=', $diaActual)
             ->where('tSemestre.fecha_fin', '>=', $diaActual)->first();
 
         return response()->json($semestreActual, 200);
@@ -23,7 +23,7 @@ class SemestreController extends Controller
     {
         try
         {
-            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', DB::raw('now()<=fecha_fin && now()>=fecha_inicio as activo'))->orderBy('semestre','DESC')->get();
+            $semestres = Semestre::select('id','semestre','fecha_inicio','fecha_fin', DB::raw('now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('estado', "ACT")->orderBy('semestre','DESC')->get();
             return response()->json($semestres, 200);
         }
         catch(Exception $e)
@@ -86,7 +86,7 @@ class SemestreController extends Controller
 
     public function obtenerSemestreXCodigo(ObtenerSemestreXCodigoRequest $request)
     {
-        $semestre = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('tSemestre.semestre', '=', $request->semestre)
+        $semestre = Semestre::select(DB::raw('*, now()<=fecha_fin && now()>=fecha_inicio as activo'))->where('estado', "ACT")->where('tSemestre.semestre', '=', $request->semestre)
             ->first();
 
         return response()->json($semestre, 200);
