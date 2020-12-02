@@ -48,7 +48,7 @@ class FaseController extends Controller
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
-        //$fase->publicacion_notas = $request->publicacion_notas;
+        $fase->publicacion_notas = $request->publicacion_notas;
         //$fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
@@ -76,7 +76,7 @@ class FaseController extends Controller
         $fase->disposicion_preguntas = $request->disposicion_preguntas;
         $fase->permitir_retroceso = $request->permitir_retroceso;
         $fase->publicacion_notas = $request->publicacion_notas;
-        $fase->notas_publicadas = $request->notas_publicadas;
+        //$fase->notas_publicadas = $request->notas_publicadas;
         $fase->save();
 
         return response()->json("Fase editada correctamente", 200);
@@ -168,7 +168,7 @@ class FaseController extends Controller
             ->select('tHorario.horario', 'tFase.id', 'tFase.nombre', 'tFase.fecha_inicio', 'tFase.hora_inicio',
                 'tFase.fecha_fin', 'tFase.hora_fin', 'tFase.puntaje', 'tFase.sincrona',
                 'tFase.preguntas_aleatorias', 'tFase.preguntas_mostradas', 'tFase.disposicion_preguntas',
-                'tFase.permitir_retroceso')
+                'tFase.permitir_retroceso', 'tFase.publicacion_notas', 'tFase.notas_publicadas')
             ->where('tUsuario.codigo', '=', $request->codigoUsuario)
             ->where('tSemestre.semestre', '=', $request->semestre)
             ->where('tCurso.codigo', '=', $request->codigoCurso)
