@@ -541,7 +541,7 @@ class EvaluacionController extends Controller
         /*
         $result=array();
         */
-        $evaluaciones = Evaluacion::select('tEvaluacion.id', 'tEvaluacion.nombre', 'tEvaluacion.puntaje')
+        $evaluaciones = Evaluacion::select('tEvaluacion.id', 'tEvaluacion.nombre', 'tEvaluacion.puntaje as puntajeTotal')
             ->where('tEvaluacion.idtHorario', '=', $request->idtHorario)
             ->get();
 
