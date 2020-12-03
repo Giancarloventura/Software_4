@@ -531,7 +531,9 @@ class EvaluacionController extends Controller
 
     public function listarNotasEvaluaciones (Request $request)
     {
+        /*
         $result=array();
+        */
         $evaluaciones = Evaluacion::select('tEvaluacion.id', 'tEvaluacion.nombre', 'tEvaluacion.puntaje')
             ->where('tEvaluacion.idtHorario', '=', $request->idtHorario)
             ->get();
@@ -611,15 +613,19 @@ class EvaluacionController extends Controller
             $mi_alumno=['id'=>$alumno->id,
                 'codigo'=>$alumno->codigo,
                 'nombre'=>$alumno->nombre,
-                'notasObtenidas'=>$arregloEval];
+                'notas'=>$arregloEval];
 
             array_push($arregloAlumnos, $mi_alumno);
 
         }
 
+        /*
        array_push($result,$evaluaciones );
        array_push($result, $arregloAlumnos);
+        */
 
+        $result=['evaluaciones'=>$evaluaciones,
+            'alumnos'=>$arregloAlumnos];
 
         return response()->json($result, 200);
 
