@@ -580,20 +580,7 @@ class EvaluacionController extends Controller
                         $estaCorregidoEval = false;
 
                     } else if ($estaCorregidoFase->esta_corregida == 1) {
-
-                        if($fase->publicacion_notas = 0){
-                            $boolEstaCorregidoFase = true;
-                        }
-                        else if($fase->publicacion_notas = 1){
-                            if($fase->notas_publicadas = 0){
-                                $boolEstaCorregidoFase = false;
-                                $estaCorregidoEval = false;
-                            }
-                            else if($fase->notas_publicadas = 1){
-                                $boolEstaCorregidoFase = true;
-                                $puntaje_tot_eval += $puntaje_obtenido->puntaje_obtenido;
-                            }
-                        }
+                        $puntaje_tot_eval += $puntaje_obtenido->puntaje_obtenido;
 
                     }
 
