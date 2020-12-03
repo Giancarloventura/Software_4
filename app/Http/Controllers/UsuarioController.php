@@ -139,7 +139,7 @@ class UsuarioController extends Controller
         {
             $cadena = $request->cadena;
             if($cadena == NULL || $cadena ==''){
-                $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->get();
+                $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado','fecha_actualizacion')->get();
                 return response()->json($usuarios, 200);
             } else {
                 if(is_numeric($cadena)){
