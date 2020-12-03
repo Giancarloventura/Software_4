@@ -477,7 +477,7 @@ class EvaluacionController extends Controller
         $collection = [];
 
         //Obtengo los alumnos de la evaluacion
-        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->get();
+        $alumnos = UsuarioRol::where('tUsuario_tRol.idtHorario', '=', $evaluacion->idtHorario)->where('tUsuario_tRol.idtRol', 5)->get();
 
         $fases = Fase::where('tFase.idtEvaluacion', '=', $request->idEvaluacion)->get();
 
