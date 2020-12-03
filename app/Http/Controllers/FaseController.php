@@ -347,6 +347,9 @@ class FaseController extends Controller
     {
         try
         {
+            if(DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase',$request->idFase)->exists() and DB::table('tUsuario_tFase')->where('idtUsuario', $request->idUsuario)->where('idtFase',$request->idFase)->first()->respuestas_creadas==1){
+                return response()->json(['status' => 'success'], 201);
+            }
             $fase = Fase::select('idtEvaluacion', 'preguntas_mostradas')
                     ->from('tFase')
                     ->where('id', $request->idFase)->first();
