@@ -591,12 +591,12 @@ class EvaluacionController extends Controller
                 }
                 if($estaCorregidoEval){
                     $mi_eval=['idEvaluacion'=>$evaluacion->id,
-                        'puntaje'=>$puntaje_tot_eval,
+                        'puntajeTotal'=>$puntaje_tot_eval,
                         'estaCorregido'=>$estaCorregidoEval];
                 }
                 else{
                     $mi_eval=['idEvaluacion'=>$evaluacion->id,
-                        'puntaje'=>null,
+                        'puntajeTotal'=>null,
                         'estaCorregido'=>$estaCorregidoEval];
                 }
 
