@@ -568,13 +568,13 @@ class EvaluacionController extends Controller
                     $puntaje_obtenido = DB::table('tUsuario_tFase')
                         ->select(DB::raw('tUsuario_tFase.puntaje_obtenido'))
                         ->where('idtFase', '=', $fase->id, 'and')
-                        ->where('idtUsuario', '=', $request->idtUsuario)
+                        ->where('idtUsuario', '=', $alumno->id)
                         ->first();
 
                     $estaCorregidoFase = DB::table('tUsuario_tFase')
                         ->select(DB::raw('tUsuario_tFase.esta_corregida'))
                         ->where('idtFase', '=', $fase->id, 'and')
-                        ->where('idtUsuario', '=', $request->idtUsuario)
+                        ->where('idtUsuario', '=', $alumno->id)
                         ->first();
 
                     if ($estaCorregidoFase == null) {
