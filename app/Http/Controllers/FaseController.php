@@ -52,7 +52,7 @@ class FaseController extends Controller
         if($request->publicacion_notas == 1){
             $fase->notas_publicadas = 0;
         }
-        
+
         $fase->save();
 
         return response()->json($fase, 200);
@@ -403,39 +403,42 @@ class FaseController extends Controller
             $puntaje = Pregunta::where('tPregunta.id', '=', $pregunta->idtPregunta)
                 ->where('tPregunta.estado', '=', 'ACT')
                 ->first();
-            $respuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->get();
-            $cantidadRespuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->count();
 
-            $cantMaximo = 0;
-            $cantMinimo = 0;
-            $cantIntermedio = 0;
+            if($puntaje != null){
+                $respuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->get();
+                $cantidadRespuestas = Respuesta::where('tRespuesta.idtPregunta', '=', $pregunta->idtPregunta)->count();
 
-            foreach($respuestas as $respuesta)
-            {
-                if($respuesta->puntaje_obtenido == $puntaje->puntaje)
+                $cantMaximo = 0;
+                $cantMinimo = 0;
+                $cantIntermedio = 0;
+
+                foreach($respuestas as $respuesta)
                 {
-                    $cantMaximo++;
+                    if($respuesta->puntaje_obtenido == $puntaje->puntaje)
+                    {
+                        $cantMaximo++;
+                    }
+                    else if($respuesta->puntaje_obtenido == 0)
+                    {
+                        $cantMinimo++;
+                    }
+                    else
+                    {
+                        $cantIntermedio++;
+                    }
                 }
-                else if($respuesta->puntaje_obtenido == 0)
-                {
-                    $cantMinimo++;
-                }
-                else
-                {
-                    $cantIntermedio++;
-                }
+
+                $tmp= [
+                    'id'=> $puntaje->id,
+                    'pregunta'=> $puntaje->posicion,
+                    'cantidad_respuestas'=> $cantidadRespuestas,
+                    'cantidad_puntaje_completo'=> $cantMaximo,
+                    'cantidad_puntaje_intermedio'=> $cantIntermedio,
+                    'cantidad_puntaje_cero'=> $cantMinimo
+                ];
+
+                $collection[]= $tmp;
             }
-
-            $tmp= [
-                'id'=> $puntaje->id,
-                'pregunta'=> $puntaje->posicion,
-                'cantidad_respuestas'=> $cantidadRespuestas,
-                'cantidad_puntaje_completo'=> $cantMaximo,
-                'cantidad_puntaje_intermedio'=> $cantIntermedio,
-                'cantidad_puntaje_cero'=> $cantMinimo
-            ];
-
-            $collection[]= $tmp;
         }
 
         return response()->json($collection, 200);
