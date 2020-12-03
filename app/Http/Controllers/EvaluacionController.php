@@ -248,8 +248,8 @@ class EvaluacionController extends Controller
                     ->where('idtUsuario', '=', $request->idtUsuario)
                     ->first();
 
-                if($estaCorregidoFase==1 && $fase->publicacion_notas == 1 && $fase->notas_publicadas==0){
-                        $estaCorregidoFase = 0;
+                if($estaCorregidoFase->esta_corregida==1 && $fase->publicacion_notas == 1 && $fase->notas_publicadas==0){
+                    $estaCorregidoFase->esta_corregida = 0;
                     };
                 if($estaCorregidoFase == null){
                     $estaCorregidoEval = false;
