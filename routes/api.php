@@ -13,6 +13,7 @@ use App\Http\Controllers\RespuestaController;
 use App\Http\Controllers\ComentarioControlador;
 use App\Http\Controllers\PreguntaController;
 use App\Http\Controllers\AlternativaPreguntaController;
+use \App\Http\Controllers\MailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,3 +163,4 @@ Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
 Route::post('resumen-notas-alumno', [EvaluacionController::class, 'resumenNotasAlumno']);
 
+Route::post('enviar-mail-prueba', [MailController::class, 'nuevaEtapa']);

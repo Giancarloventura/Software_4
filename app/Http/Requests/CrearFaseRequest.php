@@ -26,10 +26,12 @@ class CrearFaseRequest extends FormRequest
         return [
             'evaluacion' => ['required', 'exists:tEvaluacion,id'],
             'nombre' => ['required'],
+            'descripcion' => ['required'],
             'fecha_inicio' => ['required', 'date'],
             'fecha_fin' => ['required', 'date', 'after_or_equal:fecha_inicio'],
             'hora_inicio'=> ['required'],
             'hora_fin' => ['required'],
+            'puntaje' => ['required'],
             'sincrona' => ['required', 'in:0,1'],
             'preguntas_aleatorias' => ['required', 'in:0,1'],
             'preguntas_mostradas' => ['required_if:preguntas_aleatorias,1', 'numeric'],

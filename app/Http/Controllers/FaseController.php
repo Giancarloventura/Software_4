@@ -39,10 +39,12 @@ class FaseController extends Controller
         $fase = new Fase;
         $fase->idtEvaluacion = $request->evaluacion;
         $fase->nombre = $request->nombre;
+        $fase->descripcion = $request->descripcion;
         $fase->fecha_inicio = $request->fecha_inicio;
         $fase->fecha_fin = $request->fecha_fin;
         $fase->hora_inicio = $request->hora_inicio;
         $fase->hora_fin = $request->hora_fin;
+        $fase->puntaje = $request->puntaje;
         $fase->sincrona = $request->sincrona;
         $fase->preguntas_aleatorias = $request->preguntas_aleatorias;
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
@@ -69,10 +71,12 @@ class FaseController extends Controller
         $fase = Fase::findOrFail($request->id);
         $fase->idtEvaluacion = $request->evaluacion;
         $fase->nombre = $request->nombre;
+        $fase->descripcion = $request->descripcion;
         $fase->fecha_inicio = $request->fecha_inicio;
         $fase->fecha_fin = $request->fecha_fin;
         $fase->hora_inicio = $request->hora_inicio;
         $fase->hora_fin = $request->hora_fin;
+        $fase->puntaje = $request->puntaje;
         $fase->sincrona = $request->sincrona;
         $fase->preguntas_aleatorias = $request->preguntas_aleatorias;
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
@@ -200,7 +204,7 @@ class FaseController extends Controller
     {
         try
         {
-            $fase = Fase::select('id', 'nombre', 'fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin',
+            $fase = Fase::select('id', 'nombre', 'descripcion', 'fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin',
                                 'puntaje', 'sincrona', 'preguntas_aleatorias', 'preguntas_mostradas',
                                 'disposicion_preguntas', 'permitir_retroceso')
                         ->where('id', $request->id)
