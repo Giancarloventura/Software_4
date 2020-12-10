@@ -28,7 +28,7 @@ use DB;
 
 class FaseController extends Controller
 {
-    public function crearFase(CrearFaseRequest $request)
+    public function crearFase(Request $request)
     {
         if($request->fecha_inicio == $request->fecha_fin){
             if($request->hora_fin <= $request->hora_inicio){
@@ -58,7 +58,7 @@ class FaseController extends Controller
         return response()->json($fase, 200);
     }
 
-    public function editarFase(EditarFaseRequest $request)
+    public function editarFase(Request $request)
     {
         if($request->fecha_inicio == $request->fecha_fin){
             if($request->hora_fin <= $request->hora_inicio){
