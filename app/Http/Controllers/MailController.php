@@ -9,8 +9,8 @@ use App\Mail\NuevaEtapa;
 class MailController extends Controller {
     public function nuevaEtapa() {
         $u = 'Giancarlo';
-        $e = 'Tu kchero';
-        Mail::to('g.ventura@pucp.edu.pe')->queue(new NuevaEtapa($u, $e));
+        $e = 'xd';
+        Mail::to('hml101299@gmail.com')->queue(new NuevaEtapa($u, $e));
         return true;
     }
 }

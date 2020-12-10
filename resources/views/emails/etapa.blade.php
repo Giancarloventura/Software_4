@@ -2,11 +2,11 @@
     # Hola, {{ $nombreUsuario }}
 
     Tienes una nueva etapa corregida:
-    <br>
+    <br />
     Etapa: {{ $nombreEtapa }}
 
-    <br>
+    <br />
     Puedes desactivar este tipo de notificaciones desde la configuracion de tu cuenta.
-    <br>
+    <br />
     Equipo Mr. Robot
 @endcomponent

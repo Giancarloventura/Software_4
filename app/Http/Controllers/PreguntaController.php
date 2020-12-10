@@ -27,6 +27,7 @@ class PreguntaController extends Controller
             if($request->tipo==0){
                 $pregunta->tipo_marcado = NULL;
                 $pregunta->nombre= $request->nombre;
+                //$pregunta->subida_archivos = $request->subidaArchivos;
 
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
