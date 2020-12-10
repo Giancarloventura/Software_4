@@ -82,6 +82,7 @@ class RespuestaController extends Controller
                     }
                 }
             }
+            $respuesta->subida_archivos = $pregunta->subida_archivos;
             $respuesta->tipo = $pregunta->tipo;
             $respuesta->tipoMarcado = $pregunta->tipo_marcado;
             $respuesta->opciones = AlternativaResource::collection($alternativas);
@@ -113,6 +114,7 @@ class RespuestaController extends Controller
                     }
                 }
             }
+            $respuesta->subida_archivos = $pregunta->subida_archivos;
             $respuesta->tipo = $pregunta->tipo;
             $respuesta->tipoMarcado = $pregunta->tipo_marcado;
             $respuesta->opciones = AlternativaResource::collection($alternativas);
@@ -154,19 +156,36 @@ class RespuestaController extends Controller
                 }
                 if($puntaje_completo==0) break;
             }
-            if($puntaje_completo == 1){
-                $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
+            if($pregunta->tipo_penalizacion==0){
+                if($puntaje_completo == 1){
+                    $respuesta->puntaje_obtenido = (float) $pregunta->puntaje;
+                }
+                else{
+                    $respuesta->puntaje_obtenido = 0;
+                }
+                $respuesta->estado = 2;
+            
+                $respuesta->save();
+                return response()->json([
+                    "intentos" => $respuesta->numero_intento,
+                    "puntajeAsignado" => $respuesta->puntaje_obtenido,
+                ]);
             }
             else{
-                $respuesta->puntaje_obtenido = 0;
+                if($puntaje_completo == 1){
+                    $respuesta->puntaje_obtenido = (float) $pregunta->puntaje-(($respuesta->numero_intento-1)*$pregunta->puntaje*(1/($pregunta->cant_intentos)));
+                }
+                else{
+                    $respuesta->puntaje_obtenido = 0;
+                }
+                $respuesta->estado = 2;
+            
+                $respuesta->save();
+                return response()->json([
+                    "intentos" => $respuesta->numero_intento,
+                    "puntajeAsignado" => $respuesta->puntaje_obtenido,
+                ]);
             }
-            $respuesta->estado = 2;
-        
-            $respuesta->save();
-            return response()->json([
-                "intentos" => $respuesta->numero_intento,
-                "puntajeAsignado" => $respuesta->puntaje_obtenido,
-            ]);
         }
         
     }

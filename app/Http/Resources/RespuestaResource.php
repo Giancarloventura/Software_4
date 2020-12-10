@@ -25,6 +25,8 @@ class RespuestaResource extends JsonResource
             'opciones' => $this->opciones,
             'intentos' => $this->numero_intento,
             'texto' => $this->redaccion,
+            'subidaArchivos' => $this->subida_archivos,
+            'nombreArchivo' => $this->nombre_archivo,
         ];
     }
 }

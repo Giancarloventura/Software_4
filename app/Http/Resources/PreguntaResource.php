@@ -29,6 +29,7 @@ class PreguntaResource extends JsonResource
             'opciones' => $this->opciones,
             'opcionesCorrectas' => $this->opcionesCorrectas,
             'intentosMax' => $this->cant_intentos,
+            'subidaArchivos' => $this->subida_archivos,
         ];
     }
 }
