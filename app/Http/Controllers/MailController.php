@@ -10,7 +10,7 @@ class MailController extends Controller {
     public function nuevaEtapa() {
         $u = 'Giancarlo';
         $e = 'xd';
-        Mail::to('hml101299@gmail.com')->queue(new NuevaEtapa($u, $e));
+        Mail::to('rsaj97@gmail.com')->queue(new NuevaEtapa($u, $e));
         return true;
     }
 }
