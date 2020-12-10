@@ -7,20 +7,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NuevaEtapa extends Mailable {
+class NotificacionEvaluacion extends Mailable {
     use Queueable, SerializesModels;
 
-    public $nombreUsuario;
-    public $nombreEtapa;
+    public $rol;
+    public $nombre;
+    public $nombre_fase;
+    public $laboratorio;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($nombreUsuario, $nombreEtapa) {
-        $this->nombreUsuario = $nombreUsuario;
-        $this->nombreEtapa = $nombreEtapa;
+    public function __construct($rol, $nombre, $nombre_fase, $laboratorio) {
+        $this->rol = $rol;
+        $this->nombre = $nombre;
+        $this->nombre_fase = $nombre_fase;
+        $this->laboratorio = $laboratorio;
     }
 
     /**
@@ -29,6 +33,6 @@ class NuevaEtapa extends Mailable {
      * @return $this
      */
     public function build() {
-        return $this->subject('NOTIFICACION NUEVA ETAPA')->markdown('emails.etapa');
+        return $this->subject('COMENTARIO DE LA EVALUACIÓN')->markdown('emails.notificacion');
     }
 }
