@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AlternativaPregunta;
 use App\Models\User;
 use App\Http\Resources\PreguntaResource;
+use App\Http\Resources\PreguntaResourceProfesor;
 use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Fase;
@@ -26,8 +27,8 @@ class PreguntaController extends Controller
             $pregunta->tipo = $request->tipo;
             if($request->tipo==0){
                 $pregunta->tipo_marcado = NULL;
-                $pregunta->nombre= $request->nombre;
-                //$pregunta->subida_archivos = $request->subidaArchivos;
+                $pregunta->nombre= NULL;
+                $pregunta->subida_archivos = 0;
 
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
@@ -36,7 +37,7 @@ class PreguntaController extends Controller
             } else {
                 $pregunta->tipo_marcado = $request->tipo_marcado; // 0 o 1
                 $pregunta->nombre = NULL;
-
+                $pregunta->tipo_penalizacion = 0;
                 //$pregunta->tusuario_id_creacion = $usuario->id;
                 //$pregunta->tusuario_id_creacion = $request->tusuario_id_creacion;
                 $pregunta->fecha_actualizacion = NULL;
@@ -97,10 +98,12 @@ class PreguntaController extends Controller
 
             if($pregunta->tipo == 0){
                 $pregunta->nombre = $request->nombre;
+                $pregunta->subida_archivos = $request->subidaArchivo;
                 $pregunta->tipo_marcado = NULL;
                 $pregunta->save();
             }else{
                 $pregunta->nombre = NULL;
+                $pregunta->tipo_penalizacion = $request->tipoPenalizacion;
                 $pregunta->tipo_marcado = $request->tipo_marcado;
                 $pregunta->save();
                 //Elimina alternativas existentes x idtPregunta:
@@ -167,7 +170,7 @@ class PreguntaController extends Controller
             $pregunta->opcionesCorrectas = $pregunta->alternativas()->where('es_correcta', 1)->get()->count();
         }
 
-        return response()->json(PreguntaResource::collection($preguntas), 200);
+        return response()->json(PreguntaResourceProfesor::collection($preguntas), 200);
     }
 
 

@@ -272,6 +272,13 @@ class FaseController extends Controller
     public function crearComentario(CrearComentarioRequest $request)
     {
         $comentario = new Comentario();
+        $autorComentario = User::find($request->idUsuario);
+        //hallar el rol del usuario en esa fase
+        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor);
+        foreach($destinatarios as $destinatario){
+            $usuario = User::find($destinatario->tusuario_id_creacion);
+            //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
+        }
 
         $comentario->idtUsuario = $request->idUsuario;
         $comentario->idtFase = $request->idFase;
