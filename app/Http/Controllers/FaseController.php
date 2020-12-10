@@ -39,12 +39,10 @@ class FaseController extends Controller
         $fase = new Fase;
         $fase->idtEvaluacion = $request->evaluacion;
         $fase->nombre = $request->nombre;
-        $fase->descripcion = $request->descripcion;
         $fase->fecha_inicio = $request->fecha_inicio;
         $fase->fecha_fin = $request->fecha_fin;
         $fase->hora_inicio = $request->hora_inicio;
         $fase->hora_fin = $request->hora_fin;
-        $fase->puntaje = $request->puntaje;
         $fase->sincrona = $request->sincrona;
         $fase->preguntas_aleatorias = $request->preguntas_aleatorias;
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
@@ -71,12 +69,10 @@ class FaseController extends Controller
         $fase = Fase::findOrFail($request->id);
         $fase->idtEvaluacion = $request->evaluacion;
         $fase->nombre = $request->nombre;
-        $fase->descripcion = $request->descripcion;
         $fase->fecha_inicio = $request->fecha_inicio;
         $fase->fecha_fin = $request->fecha_fin;
         $fase->hora_inicio = $request->hora_inicio;
         $fase->hora_fin = $request->hora_fin;
-        $fase->puntaje = $request->puntaje;
         $fase->sincrona = $request->sincrona;
         $fase->preguntas_aleatorias = $request->preguntas_aleatorias;
         $fase->preguntas_mostradas = $request->preguntas_mostradas;
