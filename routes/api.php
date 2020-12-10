@@ -92,6 +92,7 @@ Route::post('listar-comentario-fase', [FaseController::class, 'listarComentarioX
 Route::post('crear-preguntas-aleatorias', [FaseController::class, 'crearPreguntasAleatorias']);
 Route::post('dashboard-fase', [FaseController::class, 'dashboardFase']);
 Route::post('publicar-notas', [FaseController::class, 'setNotasPublicadas']);
+Route::post('editar-descripcion-fase', [FaseController::class, 'editarDescripcionFase']);
 
 // RUTAS PARA LAS UNIDADES ACADÉMICAS
 Route::group(['prefix' => 'unidadesacademicas'], function () {

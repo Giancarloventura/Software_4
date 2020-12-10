@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CrearComentarioRequest;
 use App\Http\Requests\DashboardFaseRequest;
+use App\Http\Requests\EditarDescripcionFaseRequest;
 use App\Http\Requests\EditarFaseRequest;
 use App\Http\Requests\EliminarFaseRequest;
 use App\Http\Requests\ListarComentarioXAlumnoRequest;
@@ -86,6 +87,15 @@ class FaseController extends Controller
         $fase->save();
 
         return response()->json("Fase editada correctamente", 200);
+    }
+
+    public function editarDescripcionFase(EditarDescripcionFaseRequest $request)
+    {
+        $fase = Fase::findOrFail($request->id);
+        $fase->descripcion = $request->descripcion;
+        $fase->save();
+
+        return response()->json("Descripcion de la fase editada correctamente", 200);
     }
 
     //Borra la fase completamente, porque no hay un estado en la tabla
