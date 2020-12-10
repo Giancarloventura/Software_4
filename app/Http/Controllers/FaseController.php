@@ -91,7 +91,7 @@ class FaseController extends Controller
 
     public function editarDescripcionFase(EditarDescripcionFaseRequest $request)
     {
-        $fase = Fase::findOrFail($request->id);
+        $fase = Fase::findOrFail($request->idFase);
         $fase->descripcion = $request->descripcion;
         $fase->save();
 
