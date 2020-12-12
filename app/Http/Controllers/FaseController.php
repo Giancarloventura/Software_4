@@ -13,6 +13,7 @@ use App\Http\Requests\ObtenerCantidadPreguntasRequest;
 use App\Models\Comentario;
 use App\Models\Evaluacion;
 use App\Models\FasePregunta;
+use App\Models\Rol;
 use App\Models\Pregunta;
 use App\Models\UsuarioRol;
 use http\Env\Response;
