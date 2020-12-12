@@ -29,7 +29,8 @@ class Fase extends JsonResource
                 'preguntas_mostradas' => $this->preguntas_mostradas,
                 'disposicion_preguntas' => $this->disposicion_preguntas,
                 'permitir_retroceso' => $this->permitir_retroceso,
-                'respuestas_creadas' => $this->respuestas_creadas
+                'respuestas_creadas' => $this->respuestas_creadas,
+                'descripcion'=> $this->descripcion
             ];
         else
             return [
@@ -45,7 +46,8 @@ class Fase extends JsonResource
                 'preguntas_mostradas' => $this->preguntas_mostradas,
                 'disposicion_preguntas' => $this->disposicion_preguntas,
                 'permitir_retroceso' => $this->permitir_retroceso,
-                'respuestas_creadas' => $this->respuestas_creadas
+                'respuestas_creadas' => $this->respuestas_creadas,
+                'descripcion'=> $this->descripcion
             ];
     }
 }

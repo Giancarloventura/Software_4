@@ -24,6 +24,13 @@ class RespuestaController extends Controller
         $respuesta->estado = 2;
         $respuesta->save();
 
+        if(DB::table('tUsuario_tFase')->where('idtUsuario',$respuesta->tusuario_id_creacion)->where('idtFase',$respuesta->idtFase)->first()->respuestas_creadas==1){
+            $fase = Fase::find($respuesta->idtFase);
+            if($fase->publicacion_notas==0 or ($fase->publicacion_notas==1 and $fase->notas_publicadas==1)){
+                //Funcion para enviar correo
+            }
+        }
+
         return response()->json("Nota modificada correctamente", 200);
     }
 

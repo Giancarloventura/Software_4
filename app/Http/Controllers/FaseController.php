@@ -204,6 +204,13 @@ class FaseController extends Controller
         $fase = Fase::find($request->id);
         $fase->notas_publicadas = 1;
         $fase->save();
+
+        $destinatarios = DB::table('tUsuario_tFase')->where('idtFase',$request->id)->where('esta_corregida',1)->get();
+        foreach($destinatarios as $destinatario){
+            $usuario = User::find($destinatario->idtUsuario);
+            //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
+        }
+
     }
 
     public function obtenerFase(Request $request)
@@ -212,7 +219,7 @@ class FaseController extends Controller
         {
             $fase = Fase::select('id', 'nombre', 'descripcion', 'fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin',
                                 'puntaje', 'sincrona', 'preguntas_aleatorias', 'preguntas_mostradas',
-                                'disposicion_preguntas', 'permitir_retroceso')
+                                'disposicion_preguntas', 'permitir_retroceso','descripcion')
                         ->where('id', $request->id)
                         ->first();
             return response()->json($fase, 200);
@@ -274,7 +281,7 @@ class FaseController extends Controller
         $comentario = new Comentario();
         $autorComentario = User::find($request->idUsuario);
         //hallar el rol del usuario en esa fase
-        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor);
+        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->get();
         foreach($destinatarios as $destinatario){
             $usuario = User::find($destinatario->tusuario_id_creacion);
             //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
