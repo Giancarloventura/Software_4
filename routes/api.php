@@ -164,4 +164,4 @@ Route::get('fases/{id}/seguimiento', [FaseController::class,'getSeguimiento']);
 
 Route::post('resumen-notas-alumno', [EvaluacionController::class, 'resumenNotasAlumno']);
 
-Route::post('enviar-mail-prueba', [MailController::class, 'notificacionPrueba']);
+Route::post('enviar-mail-prueba', [MailController::class, 'correccionPrueba']);
