@@ -288,7 +288,7 @@ class FaseController extends Controller
         $autorComentario = User::find($request->idAutor);
         $rol = $autorComentario->roles()->wherePivot('idtHorario',$horario)->first()->nombre;
         //hallar el rol del usuario en esa fase
-        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->groupBy('idtUsuario')->get();
+        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->groupBy('tusuario_id_creacion')->get();
         foreach($destinatarios as $destinatario){
             $usuario = User::find($destinatario->tusuario_id_creacion);
             echo $rol;
