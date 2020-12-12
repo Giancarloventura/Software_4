@@ -279,11 +279,20 @@ class FaseController extends Controller
     public function crearComentario(CrearComentarioRequest $request)
     {
         $comentario = new Comentario();
-        $autorComentario = User::find($request->idUsuario);
+        $fase = Fase::find($request->idFase);
+        $evaluacion = $fase->evaluacion()->first();
+        $horario = $evaluacion->horario()->first()->id;
+        $autorComentario = User::find($request->idAutor);
+        $rol = Rol::find($autorComentario->roles()->where('idtHorario',$horario)->first()->idtRol)->nombre;
         //hallar el rol del usuario en esa fase
-        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->get();
+        $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->groupBy('idtUsuario')->get();
         foreach($destinatarios as $destinatario){
             $usuario = User::find($destinatario->tusuario_id_creacion);
+            echo $rol;
+            echo $autorComentario->nombre;
+            echo $fase->nombre;
+            echo $evaluacion->nombre;
+            //Mail::to($usuario->email)->queue(new NotificacionEvaluacion($rol, $autorComentario->nombre, $fase->nombre, $evaluacion->nombre));
             //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
         }
 
