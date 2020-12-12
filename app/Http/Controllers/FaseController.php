@@ -24,6 +24,8 @@ use App\Models\Fase;
 use App\Models\User;
 use App\Http\Requests\CrearFaseRequest;
 use App\Http\Requests\ListarFaseXEvaluacionRequest;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificacionEvaluacion;
 use DB;
 
 
@@ -293,7 +295,7 @@ class FaseController extends Controller
             echo $autorComentario->nombre;
             echo $fase->nombre;
             echo $evaluacion->nombre;
-            //Mail::to($usuario->email)->queue(new NotificacionEvaluacion($rol, $autorComentario->nombre, $fase->nombre, $evaluacion->nombre));
+            Mail::to($usuario->email)->queue(new NotificacionEvaluacion($rol, $autorComentario->nombre, $fase->nombre, $evaluacion->nombre));
             //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
         }
 
