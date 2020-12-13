@@ -11,9 +11,11 @@ use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Respuesta;
 use App\Models\Fase;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreccionEvaluacion;
 use Illuminate\Support\Facades\Storage;
+use DB;
 
 class RespuestaController extends Controller
 {
