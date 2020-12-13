@@ -11,6 +11,9 @@ use App\Http\Resources\AlternativaResource;
 use Illuminate\Http\Request;
 use App\Models\Respuesta;
 use App\Models\Fase;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CorreccionEvaluacion;
+use Illuminate\Support\Facades\Storage;
 
 class RespuestaController extends Controller
 {
@@ -24,10 +27,12 @@ class RespuestaController extends Controller
         $respuesta->estado = 2;
         $respuesta->save();
 
-        if(DB::table('tUsuario_tFase')->where('idtUsuario',$respuesta->tusuario_id_creacion)->where('idtFase',$respuesta->idtFase)->first()->respuestas_creadas==1){
+        if(DB::table('tUsuario_tFase')->where('idtUsuario',$respuesta->tusuario_id_creacion)->where('idtFase',$respuesta->idtFase)->first()->esta_corregida==1){
             $fase = Fase::find($respuesta->idtFase);
             if($fase->publicacion_notas==0 or ($fase->publicacion_notas==1 and $fase->notas_publicadas==1)){
-                //Funcion para enviar correo
+                $evaluacion = $fase->evaluacion()->first();
+                $destinatario = User::find($respuesta->tusuario_id_creacion);
+                Mail::to($destinatario->email)->queue(new CorreccionEvaluacion($fase->nombre, $evaluacion->nombre));
             }
         }
 
@@ -195,6 +200,32 @@ class RespuestaController extends Controller
             }
         }
         
+    }
+
+    public function guardarArchivo (Request $request){
+        try{
+            $respuesta = Respuesta::find($request->idRespuesta);
+            $path = $request->file('archivo')->store('ArchivosRespuesta');
+            $respuesta->ruta_archivo = $path;
+            $respuesta->nombre_archivo = $request->file('archivo')->getClientOriginalName();
+            $respuesta->save();
+            return true;
+        }
+        catch(Exception $e)
+        {
+            return false;
+        }
+    }
+
+    public function descargarArchivo (Request $request){
+        try{
+            $respuesta = Respuesta::find($request->idRespuesta);
+            return Storage::download($respuesta->ruta_archivo,$respuesta->nombre_archivo);
+        }
+        catch(Exception $e)
+        {
+            return false;
+        }
     }
 
 }

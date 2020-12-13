@@ -26,6 +26,7 @@ use App\Http\Requests\CrearFaseRequest;
 use App\Http\Requests\ListarFaseXEvaluacionRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionEvaluacion;
+use App\Mail\CorreccionEvaluacion;
 use DB;
 
 
@@ -207,10 +208,11 @@ class FaseController extends Controller
         $fase = Fase::find($request->id);
         $fase->notas_publicadas = 1;
         $fase->save();
-
+        $evaluacion = $fase->evaluacion()->first();
         $destinatarios = DB::table('tUsuario_tFase')->where('idtFase',$request->id)->where('esta_corregida',1)->get();
         foreach($destinatarios as $destinatario){
             $usuario = User::find($destinatario->idtUsuario);
+            Mail::to($usuario->email)->queue(new CorreccionEvaluacion($fase->nombre, $evaluacion->nombre));
             //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
         }
 
