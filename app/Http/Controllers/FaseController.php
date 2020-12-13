@@ -293,10 +293,6 @@ class FaseController extends Controller
         $destinatarios = DB::table('tComentario')->where('idtUsuario', $request->idUsuario)->where('idtFase', $request->idFase)->where('tusuario_id_creacion', '!=', $request->idAutor)->groupBy('tusuario_id_creacion')->get();
         foreach($destinatarios as $destinatario){
             $usuario = User::find($destinatario->tusuario_id_creacion);
-            echo $rol;
-            echo $autorComentario->nombre;
-            echo $fase->nombre;
-            echo $evaluacion->nombre;
             Mail::to($usuario->email)->queue(new NotificacionEvaluacion($rol, $autorComentario->nombre, $fase->nombre, $evaluacion->nombre));
             //llamar a la funcion para enviar email (string rol, string nombre persona, string nombre de fase, string laboratorio, string correo destinatario)
         }
