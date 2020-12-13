@@ -166,4 +166,4 @@ Route::post('resumen-notas-alumno', [EvaluacionController::class, 'resumenNotasA
 
 Route::post('enviar-mail-prueba', [MailController::class, 'correccionPrueba']);
 Route::post('guardar-archivo', [RespuestaController::class, 'guardarArchivo']);
-Route::post('descargar-archivo', [RespuestaController::class, 'descargarArchivo']);
+Route::get('descargar-archivo/{idRespuesta}', [RespuestaController::class, 'descargarArchivo']);

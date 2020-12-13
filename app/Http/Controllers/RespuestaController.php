@@ -217,9 +217,9 @@ class RespuestaController extends Controller
         }
     }
 
-    public function descargarArchivo (Request $request){
+    public function descargarArchivo ($idRespuesta){
         try{
-            $respuesta = Respuesta::find($request->idRespuesta);
+            $respuesta = Respuesta::find($idRespuesta);
             return Storage::download($respuesta->ruta_archivo,$respuesta->nombre_archivo);
         }
         catch(Exception $e)
