@@ -143,12 +143,21 @@ class RespuestaController extends Controller
 
     public function guardarRespuesta (Request $request){
         $respuesta = Respuesta::find($request->id);
+        $en_tiempo = Fase::select(DB::raw("CONVERT_TZ(now(),'GMT','America/Lima')<cast(concat(fecha_fin, ' ', hora_fin) as datetime) as en_tiempo"))->where('id', $respuesta->idtFase)->first()->en_tiempo;
+        if($en_tiempo==0){
+            return response()->json([
+                "en_tiempo" => $en_tiempo
+            ]);
+        }
         $respuesta->numero_intento = $respuesta->numero_intento + 1;
         if($request->tipo == 0){
             $respuesta->redaccion = $request->texto;
             $respuesta->estado = 1;
         
             $respuesta->save();
+            return response()->json([
+                "en_tiempo" => $en_tiempo
+            ]);
         }
         else{
             $respuesta->alternativas()->detach();
@@ -183,6 +192,7 @@ class RespuestaController extends Controller
                 return response()->json([
                     "intentos" => $respuesta->numero_intento,
                     "puntajeAsignado" => $respuesta->puntaje_obtenido,
+                    "en_tiempo" => $en_tiempo
                 ]);
             }
             else{
@@ -198,6 +208,7 @@ class RespuestaController extends Controller
                 return response()->json([
                     "intentos" => $respuesta->numero_intento,
                     "puntajeAsignado" => $respuesta->puntaje_obtenido,
+                    "en_tiempo" => $en_tiempo
                 ]);
             }
         }

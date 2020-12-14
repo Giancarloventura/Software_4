@@ -143,11 +143,12 @@ class UsuarioController extends Controller
                 return response()->json($usuarios, 200);
             } else {
                 if(is_numeric($cadena)){
-                    $usuarios = DB::select('call LISTAR_USUARIOS_POR_CODIGO_O_NOMBRE(?)', [$cadena]);
-                    //$usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('codigo','LIKE','%'.$cadena.'%')->get();
+                    //$usuarios = DB::select('call LISTAR_USUARIOS_POR_CODIGO_O_NOMBRE(?)', [$cadena]);
+                    $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('codigo','like','%'.$cadena.'%')->orWhere('nombre','like','%'.$cadena.'%')->get();
                     return response()->json($usuarios, 200);
                 } else {
-                    $usuarios = DB::select('call LISTAR_USUARIOS_POR_CODIGO_O_NOMBRE(?)', [$cadena]);
+                    //$usuarios = DB::select('call LISTAR_USUARIOS_POR_CODIGO_O_NOMBRE(?)', [$cadena]);
+                    $usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('codigo','like','%'.$cadena.'%')->orWhere('nombre','like','%'.$cadena.'%')->get();
                     //$usuarios = User::select('id','codigo','email','nombre','apellido_paterno','apellido_materno','estado')->where('nombre',$cadena)->get();
                     return response()->json($usuarios, 200);
                 }
