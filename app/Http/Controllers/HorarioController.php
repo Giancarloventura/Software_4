@@ -197,22 +197,34 @@ class HorarioController extends Controller
 
     public function subirCSVParticipantes($id, Request $request)
     {
-        $archivo = $request->file('archivo');
-        $archivo = $archivo->openFile();
+        $archivos = $request->file('archivo');
+        //$archivo = $archivo->openFile();
+        $archivo = fopen($archivos, 'r');
         $linea = 0;
         $duplicados = 0;
         $cantidadParticipantes = 0;
 
-        while (!$archivo->eof()) {
+        while (!feof($archivo)) {
             $linea++;
-            $fila = explode(";", $archivo->fgets());
+            $lin = fgets($archivo);
+            $fila = explode(";", $lin);
 
             if ($linea >= 8) {
                 $cantidadParticipantes += 1;
                 $codigo = $fila[0];
-                $nombres = explode(",", $fila[1])[1];
-                $apellido_paterno = explode(",", $fila[1])[0];
-                $email = explode(",", $fila[4])[0];
+                $nombre = explode(",", $fila[1])[1];
+                $nombre = ltrim($nombre, $nombre[0]);
+                $apellido = explode(",", $fila[1])[0];
+                $array = array($nombre, $apellido);
+                $nombre_completo = implode(" ", $array);
+                $cantidad_email = substr_count($fila[4], ',');
+                if($cantidad_email == 1){
+                    $email = explode(",", $fila[4])[0];
+                }
+                else{
+                    $email = $fila[4];
+                }
+
 
                 $rol_id = null;
                 $fila[5] = str_replace("\r\n", "", $fila[5]);
@@ -239,8 +251,7 @@ class HorarioController extends Controller
                     $usuario = new User;
 
                     $usuario->codigo = $codigo;
-                    $usuario->nombre = $nombres;
-                    $usuario->apellido_paterno = $apellido_paterno;
+                    $usuario->nombre = $nombre_completo;
                     $usuario->email = $email;
                     $usuario->password = '';
                     $usuario->save();
@@ -264,6 +275,7 @@ class HorarioController extends Controller
                 }
             }
         }
+        fclose($archivo);
         //return response()->json($linea - 7, 200);
         return response()->json("La asignacion se realizo correctamente con $duplicados duplicados de $cantidadParticipantes participantes", 200);
     }
