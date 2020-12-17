@@ -212,11 +212,11 @@ class HorarioController extends Controller
             if ($linea >= 8) {
                 $cantidadParticipantes += 1;
                 $codigo = $fila[0];
-                $nombre = explode(",", $fila[1])[1];
-                $nombre = ltrim($nombre, $nombre[0]);
-                $apellido = explode(",", $fila[1])[0];
-                $array = array($nombre, $apellido);
-                $nombre_completo = implode(" ", $array);
+                //$nombre = explode(",", $fila[1])[1];
+                //$nombre = ltrim($nombre, $nombre[0]);
+                //$apellido = explode(",", $fila[1])[0];
+                //$array = array($nombre, $apellido);
+                //$nombre_completo = implode(" ", $array);
                 $cantidad_email = substr_count($fila[4], ',');
                 if($cantidad_email == 1){
                     $email = explode(",", $fila[4])[0];
@@ -251,7 +251,7 @@ class HorarioController extends Controller
                     $usuario = new User;
 
                     $usuario->codigo = $codigo;
-                    $usuario->nombre = $nombre_completo;
+                    //$usuario->nombre = $nombre_completo;
                     $usuario->email = $email;
                     $usuario->password = '';
                     $usuario->save();
