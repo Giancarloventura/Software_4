@@ -242,6 +242,7 @@ class FaseController extends Controller
         $alumnos  = Fase::find($id)->evaluacion()->first()->horario()->first()->usuarios()->wherePivot('idtRol',5)->get();
 
         $alumnos_collection = [];
+        $comentarios = Comentario::where('idtFase', $id)->get()->count();
 
         foreach ($alumnos as $alumno){
             //$last_count = DB::table('tRespuesta')
@@ -265,6 +266,7 @@ class FaseController extends Controller
                 'codigo' => $alumno->codigo,
                 'preguntas_respondidas_count' => $alumno->respuestas()->where('idtFase', $id)->where('estado','<>',0)->get()->count(),
                 'ultima_pregunta' => $ultima,
+                'cantidad_comentarios' => $comentarios,
 
             ];
             $alumnos_collection[] = $tmp;
