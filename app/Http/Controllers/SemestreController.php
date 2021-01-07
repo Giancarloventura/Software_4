@@ -36,14 +36,20 @@ class SemestreController extends Controller
     {
         try
         {
+            if(Semestre::where('semestre','=',$request->semestre)->where('estado','=',"ACT")->exists()){
+                return response()->json([
+                    'insertado'=>false
+                ], 200);
+            }
+
             $semestre = new Semestre();
             $semestre->id = $request->id;
             $semestre->semestre = $request->semestre;
-            $semestre->estado = 'ACT';
             $semestre->fecha_inicio = $request->fecha_inicio;
             $semestre->fecha_fin = $request->fecha_fin;
             $semestre->estado="ACT";
             $semestre->save();
+            $semestre->insertado=true;
             return response()->json($semestre);
         }
         catch (Exception $exception)
@@ -56,11 +62,18 @@ class SemestreController extends Controller
     {
         try
         {
+            if(Semestre::where('semestre','=',$request->semestre)->where('estado','=',"ACT")->exists()){
+                return response()->json([
+                    'insertado'=>false
+                ], 200);
+            }
+
             $semestre = Semestre::findOrFail($request->id);
             $semestre->semestre = $request->semestre;
             $semestre->fecha_inicio = $request->fecha_inicio;
             $semestre->fecha_fin = $request->fecha_fin;
             $semestre->save();
+            $semestre->insertado=true;
             return response()->json($semestre);
         }
         catch(Exception $e)

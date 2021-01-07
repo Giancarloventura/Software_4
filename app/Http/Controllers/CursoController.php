@@ -9,6 +9,7 @@ use App\Http\Requests\ObtenerCursoXCodigoRequest;
 use App\Models\Curso;
 use App\Models\Semestre;
 use App\Models\Horario;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -22,23 +23,38 @@ class CursoController extends Controller
 {
     public function insertarCurso(InsertarCursoRequest $request)
     {
+        if(Curso::where('codigo','=',$request->codigo)->where('estado','=',"ACT")->exists()){
+            return response()->json([
+                'insertado'=>false
+            ], 200);
+        }
         $curso = new Curso();
         $curso->idtUnidadAcademica = $request->idUnidadAcademica;
         $curso->codigo = $request->codigo;
         $curso->nombre = $request->nombre;
         $curso->save();
 
-        return response()->json("Curso insertado correctamente", 200);
+        return response()->json([
+            'insertado'=>true
+        ], 200);
     }
 
     public function editarCurso(EditarCursoRequest $request)
     {
+        if(Curso::where('codigo','=',$request->codigo)->where('estado','=',"ACT")->exists()){
+            return response()->json([
+                'insertado'=>false
+            ], 200);
+        }
+
         $curso = Curso::findOrFail($request->idCurso);
         $curso->codigo = $request->codigo;
         $curso->nombre = $request->nombre;
         $curso->save();
 
-        return response()->json("Curso editado correctamente", 200);
+        return response()->json([
+            'insertado'=>true
+        ], 200);
     }
 
     public function eliminarCurso(EliminarCursoRequest $request)
